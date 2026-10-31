@@ -150,10 +150,11 @@ export const PeriodList = styled.div<{ $stacked?: boolean }>`
   box-sizing: border-box;
 `;
 
-export const PeriodCard = styled.div<{ $slot: PeriodSlot; $active: boolean }>`
+export const PeriodCard = styled.div<{ $slot: PeriodSlot; $active: boolean; $stacked?: boolean }>`
   display: flex;
   align-items: stretch;
-  flex: 1 1 200px;
+  /* side by side the cards share the row; stacked, a flex basis would become a height */
+  flex: ${({ $stacked }) => ($stacked ? '0 0 auto' : '1 1 200px')};
   min-width: 0;
   box-sizing: border-box;
   border: 1px solid ${({ $active, $slot }) => ($active ? PERIOD_COLORS[$slot] : 'rgba(148, 163, 184, 0.55)')};

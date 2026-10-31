@@ -17,6 +17,7 @@
 - **Query controls**: removed the mandatory metric constraint inherited from sharedControls (`clearable: true, validators: []`), so the chart can be updated and saved even in filter-only mode or with an empty selection.
 - **YearOverview component typings**: added the optional properties `selectedDatesT1` and `selectedDatesT2` to the `YearOverviewProps` interface, to match the full dual-slot support.
 - **README** listed `it` as the default `locale`; the default is `en`.
+- **Stacked period cards in the native filter bar** no longer take a 200px flex basis as height; the compact filter measures about 82px with both cards (checked in the demo).
 
 ### Changed
 - **Control panel reorganized**: a new "Periods" section sits right after "Query"; "Shortcuts" (shortcut buttons and relative dates) is split from "Filter behaviour"; labels use sentence case and shorter descriptions. Every new option is optional and the defaults keep existing charts unchanged (comparison stays on).

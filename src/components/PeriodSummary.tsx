@@ -48,7 +48,7 @@ export default function PeriodSummary({
         const summary = summarizePeriod(dates[slot], labels);
         const isActive = slot === activeSlot;
         return (
-          <PeriodCard key={slot} $slot={slot} $active={isActive} data-period={slot}>
+          <PeriodCard key={slot} $slot={slot} $active={isActive} $stacked={stacked} data-period={slot}>
             <PeriodSelectButton
               type="button"
               aria-pressed={isActive}
