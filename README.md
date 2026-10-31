@@ -16,13 +16,13 @@
 
 ![Calendar Filter in Dashboard](docs/screenshots/sales_dashboard_calendar.png)
 
-*Figure 1: Calendar Filter in the native filter bar of an Apache Superset dashboard. The two cards name the current and the comparison period with the range each one covers, and the charts follow both.*
+*Figure 1: Calendar Filter in the native filter bar of an Apache Superset dashboard. The two cards name the current and the comparison period with the range each one covers, and the StratumBar, StratumHeatmap, StratumKPI and StratumDonut charts follow both (the donut reads "2008 vs 2007", the KPI shows the change against the comparison period).*
 
 ### 🗓️ Month View & Selection Detail
 
 ![Calendar Filter Month View](docs/screenshots/live_calendar_filter.png)
 
-*Figure 2: Month view with a current period (3-17 May) and a comparison period (4-18 Apr), the metric heatmap ramp, shortcut buttons and month/year navigation.*
+*Figure 2: Month view with a current period (year 2008) and a comparison period (year 2007, ringed in magenta), the metric heatmap ramp, shortcut buttons and month/year navigation.*
 
 ---
 
