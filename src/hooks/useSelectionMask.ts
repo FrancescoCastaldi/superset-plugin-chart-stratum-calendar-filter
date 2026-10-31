@@ -15,6 +15,8 @@ export function useSelectionMask(
   customDefaultEndDate?: string,
   inValueFormat: InValueFormat = 'date',
   comparisonEnabled = true,
+  /** Text for `filterState.label`, which Superset shows in the applied filters list instead of every day */
+  describe?: (t1: string[], t2: string[]) => string,
 ) {
   const [requestedSlot, setActiveSlot] = useState<PeriodSlot>('T1');
   // Without a comparison period the reference period is the only one that can be edited
@@ -86,6 +88,9 @@ export function useSelectionMask(
         value: sortedT1.length ? sortedT1 : null,
         selectedValues,
       };
+      if (describe && (sortedT1.length > 0 || sortedT2.length > 0)) {
+        filterStatePayload.label = describe(sortedT1, sortedT2);
+      }
       if (sortedT2.length > 0) {
         filterStatePayload.selectedDatesT1 = sortedT1;
         filterStatePayload.selectedDatesT2 = sortedT2;
@@ -97,7 +102,7 @@ export function useSelectionMask(
         filterState: filterStatePayload,
       });
     },
-    [setDataMask, filterTypeMode, dateColumn, inValueFormat, activeSlot],
+    [setDataMask, filterTypeMode, dateColumn, inValueFormat, activeSlot, describe],
   );
 
   const emitSelection = useCallback(

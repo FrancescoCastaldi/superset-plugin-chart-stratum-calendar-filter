@@ -39,6 +39,9 @@ export interface CalendarLabels {
   /** Default name of the comparison period, used when the control panel label is empty */
   comparisonPeriod: string;
   periodNotSet: string;
+  /** Warning on a period whose days hold no data */
+  periodNoData: string;
+  periodNoDataTitle: string;
   periodsGroup: string;
   periodDays: (n: number) => string;
   selectPeriod: (name: string) => string;
@@ -89,6 +92,8 @@ const IT: CalendarLabels = {
   currentPeriod: 'Periodo corrente',
   comparisonPeriod: 'Periodo di confronto',
   periodNotSet: 'Non impostato',
+  periodNoData: 'nessun dato',
+  periodNoDataTitle: 'Nessuno dei giorni di questo periodo ha dati: i grafici non mostreranno nulla per questo periodo',
   periodsGroup: 'Periodi selezionati',
   periodDays: n => (n === 1 ? '1 giorno' : `${n} giorni`),
   selectPeriod: name => `Seleziona: ${name}`,
@@ -152,6 +157,8 @@ const EN: CalendarLabels = {
   currentPeriod: 'Current period',
   comparisonPeriod: 'Comparison period',
   periodNotSet: 'Not set',
+  periodNoData: 'no data',
+  periodNoDataTitle: 'None of the days in this period has data: charts will show nothing for it',
   periodsGroup: 'Selected periods',
   periodDays: n => (n === 1 ? '1 day' : `${n} days`),
   selectPeriod: name => `Select: ${name}`,

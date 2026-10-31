@@ -18,6 +18,8 @@ interface PeriodSummaryProps {
   dates: Record<PeriodSlot, Set<string>>;
   /** Period that receives the next click on a day */
   activeSlot: PeriodSlot;
+  /** Periods none of whose days holds data, flagged with a warning */
+  noData?: Partial<Record<PeriodSlot, boolean>>;
   /** Show the comparison period too; with `false` only the reference period is listed */
   comparisonEnabled: boolean;
   onSelect: (slot: PeriodSlot) => void;
@@ -34,6 +36,7 @@ export default function PeriodSummary({
   names,
   dates,
   activeSlot,
+  noData,
   comparisonEnabled,
   onSelect,
   onClear,
@@ -55,7 +58,10 @@ export default function PeriodSummary({
               title={labels.selectPeriod(names[slot])}
               onClick={() => onSelect(slot)}
             >
-              <PeriodName $slot={slot}>{names[slot]}</PeriodName>
+              <PeriodName $slot={slot} title={noData?.[slot] ? labels.periodNoDataTitle : undefined}>
+                {names[slot]}
+                {noData?.[slot] ? ` · ⚠ ${labels.periodNoData}` : ''}
+              </PeriodName>
               <PeriodRange $empty={summary.count === 0}>{summary.text}</PeriodRange>
             </PeriodSelectButton>
             {summary.count > 0 && (

@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.1.18] - 2026-11-01
+### Added
+- **Short applied filters text**: the filter now sends `filterState.label` (for example `Current period: 1 Jan - 31 Mar 2008 · 91 days | Comparison period: 1 Jan - 31 Mar 2007 · 90 days`), which the dashboard shows in the applied filters list of each chart. Before, that list printed every selected day, hundreds of dates for a year. It uses the period labels and is left out when nothing is selected.
+- **No data warning**: a period none of whose days has data in the dataset is flagged with `⚠ no data` on its card, since the charts would silently show nothing for it.
+- 3 new tests (190 in total).
+
 ## [0.1.17] - 2026-10-31
 ### Added
 - **Clear reference and comparison periods**: the two periods now have cards that show a name, a color, the range covered and the number of days (for example "Current period, 1 Sep 2026 - 15 Sep 2026 · 15 days"). Clicking a card makes it the period the next click or drag edits, and the `✕` on a card clears only that period. The cards replace the old "Time 1" / "Time 2" switch in the chart header, and also appear in the expanded dialog, where the comparison period could not be chosen before.

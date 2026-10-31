@@ -57,7 +57,7 @@ import {
   getWeekdayLabels,
 } from './utils/labels';
 import { DEFAULT_PRESETS } from './utils/presets';
-import { resolvePeriodNames } from './utils/periods';
+import { resolvePeriodNames, summarizePeriod } from './utils/periods';
 import type { PeriodSlot } from './utils/periods';
 
 
@@ -137,6 +137,27 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     [holidayMode, customHolidays, availableYears, viewYear],
   );
 
+  const periodNames = useMemo(
+    () => resolvePeriodNames({ referenceLabel, comparisonLabel }, labels),
+    [referenceLabel, comparisonLabel, labels],
+  );
+
+  // Short text for the applied filters list of the dashboard, instead of one entry per selected day
+  const describeSelection = useCallback(
+    (t1: string[], t2: string[]): string => {
+      const first = summarizePeriod(t1, labels);
+      const second = summarizePeriod(t2, labels);
+      if (!enableComparison) return first.text;
+      return [
+        t1.length > 0 ? `${periodNames.T1}: ${first.text}` : '',
+        t2.length > 0 ? `${periodNames.T2}: ${second.text}` : '',
+      ]
+        .filter(Boolean)
+        .join(' | ');
+    },
+    [labels, periodNames, enableComparison],
+  );
+
   const {
     selectedDates,
     selectedDatesT1,
@@ -160,16 +181,19 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     customDefaultEndDate,
     inValueFormat,
     enableComparison,
+    describeSelection,
   );
 
-  const periodNames = useMemo(
-    () => resolvePeriodNames({ referenceLabel, comparisonLabel }, labels),
-    [referenceLabel, comparisonLabel, labels],
-  );
   const periodDates = useMemo(
     () => ({ T1: selectedDatesT1, T2: selectedDatesT2 }),
     [selectedDatesT1, selectedDatesT2],
   );
+  // A selected period none of whose days has data would silently show nothing in the charts
+  const periodNoData = useMemo(() => {
+    if (!dataMap.hasData) return {};
+    const empty = (dates: Set<string>) => dates.size > 0 && !Array.from(dates).some(d => dataMap.map.has(d));
+    return { T1: empty(selectedDatesT1), T2: empty(selectedDatesT2) };
+  }, [dataMap, selectedDatesT1, selectedDatesT2]);
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   const renderPeriods = (stacked: boolean, afterSelect?: (slot: PeriodSlot) => void) => (
@@ -177,6 +201,7 @@ export default function CalendarFilter(props: CalendarFilterProps) {
       names={periodNames}
       dates={periodDates}
       activeSlot={activeSlot}
+      noData={periodNoData}
       comparisonEnabled={enableComparison}
       stacked={stacked}
       onSelect={slot => {

@@ -116,6 +116,42 @@ describe('CalendarFilter reference and comparison periods', () => {
     );
   });
 
+  it('sends a short label for the applied filters list instead of one entry per day', () => {
+    const { container } = render(<CalendarFilter {...baseProps} referenceLabel="This year" comparisonLabel="Last year" />);
+    fireEvent.click(container.querySelectorAll('[data-date="2026-09-15"]')[0]);
+    let mask = mockSetDataMask.mock.calls[mockSetDataMask.mock.calls.length - 1][0];
+    expect(mask.filterState.label).toMatch(/^This year: .*15.*2026 · 1 day$/);
+
+    fireEvent.click(cardOf(container, 'T2').querySelector('button') as HTMLElement);
+    fireEvent.click(container.querySelectorAll('[data-date="2026-09-10"]')[0]);
+    mask = mockSetDataMask.mock.calls[mockSetDataMask.mock.calls.length - 1][0];
+    expect(mask.filterState.label).toMatch(/^This year: .* | Last year: .*10.*2026 · 1 day$/);
+  });
+
+  it('does not send a label when nothing is selected', () => {
+    const { container } = render(
+      <CalendarFilter {...baseProps} filterState={{ value: ['2026-09-15'], selectedDatesT1: ['2026-09-15'] }} />,
+    );
+    fireEvent.click(cardOf(container, 'T1').querySelector('[aria-label="Clear: Current period"]') as HTMLElement);
+    const mask = mockSetDataMask.mock.calls[mockSetDataMask.mock.calls.length - 1][0];
+    expect(mask.filterState.label).toBeUndefined();
+  });
+
+  it('flags a period none of whose days has data', () => {
+    const { container } = render(
+      <CalendarFilter
+        {...baseProps}
+        filterState={{
+          value: ['2026-09-15'],
+          selectedDatesT1: ['2026-09-15'],
+          selectedDatesT2: ['2030-01-01', '2030-01-02'],
+        }}
+      />,
+    );
+    expect(cardOf(container, 'T2').textContent).toContain('no data');
+    expect(cardOf(container, 'T1').textContent).not.toContain('no data');
+  });
+
   it('clears one period without touching the other', () => {
     const { container } = render(
       <CalendarFilter
