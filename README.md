@@ -16,7 +16,7 @@
 
 ![Calendar Filter in Dashboard](docs/screenshots/sales_dashboard_calendar.png)
 
-*Figure 1: Calendar Filter in the native filter bar of an Apache Superset dashboard. The two cards name the current and the comparison period with the range each one covers, and the StratumBar, StratumHeatmap, StratumKPI and StratumDonut charts follow both (the donut reads "2008 vs 2007", the KPI shows the change against the comparison period).*
+*Figure 1: Calendar Filter in the native filter bar of an Apache Superset dashboard. The two cards name the current and the comparison period with the range each one covers, and the StratumBar (two series), StratumHeatmap (deltas in the cells), StratumKPI (change against the comparison period) and StratumDonut ("2008 vs 2007") charts follow both. The charts must have their time comparison set to follow the dashboard; see [Charts that follow both periods](#-charts-that-follow-both-periods).*
 
 ### 🗓️ Month View & Selection Detail
 
@@ -209,6 +209,21 @@ Launch `http://localhost:8088`, create a new chart, and select **Calendar Filter
 | `custom_default_start_date` / `custom_default_end_date` | Filter behaviour | Empty | `YYYY-MM-DD`, used when the initial selection is a custom range. |
 | `show_macro_shortcuts` | Shortcuts | `true` | Shows the shortcut buttons. |
 | `enabled_presets` | Shortcuts | last 7 / 30 days, last month, year to date | Relative-period buttons to show, in order. |
+
+---
+
+## 🧭 Charts that follow both periods
+
+The reference period becomes the dashboard time range and the comparison period travels as `time_compare` (an explicit range). A chart uses it when its own comparison is set to follow the dashboard:
+
+| Chart | Setting |
+|:---|:---|
+| StratumBar | Time comparison mode = Native Superset time offsets |
+| StratumHeatmap | Time comparison mode = Native Superset time offsets |
+| StratumKPI | Comparison calculation mode = Time shift |
+| StratumDonut | Comparison source = Dashboard (or Auto) |
+
+With the comparison left off, or the donut set to its own preset, the charts keep showing one period.
 
 ---
 
