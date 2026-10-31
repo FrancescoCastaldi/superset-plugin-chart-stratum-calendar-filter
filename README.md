@@ -16,13 +16,13 @@
 
 ![Calendar Filter in Dashboard](docs/screenshots/sales_dashboard_calendar.png)
 
-*Figure 1: Calendar Filter integrated into an Apache Superset dashboard, driving cross-filtering across companion analytical charts.*
+*Figure 1: Calendar Filter in the native filter bar of an Apache Superset dashboard. The two cards name the current and the comparison period with the range each one covers, and the charts follow both.*
 
 ### 🗓️ Month View & Selection Detail
 
 ![Calendar Filter Month View](docs/screenshots/live_calendar_filter.png)
 
-*Figure 2: Interactive month view with multi-date selection, metric intensity heatmap ramp, ISO 8601 week numbers, and rapid month/year navigation.*
+*Figure 2: Month view with a current period (3-17 May) and a comparison period (4-18 Apr), the metric heatmap ramp, shortcut buttons and month/year navigation.*
 
 ---
 
