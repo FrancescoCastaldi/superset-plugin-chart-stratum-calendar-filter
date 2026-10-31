@@ -35,10 +35,10 @@ describe('holidays', () => {
   it('lists the Italian national holidays including Easter Monday', () => {
     const h = getItalianHolidays(2026);
     expect(h.size).toBe(12);
-    expect(h.get('2026-01-01')).toBe('Capodanno');
-    expect(h.get('2026-04-06')).toBe("Lunedì dell'Angelo");
-    expect(h.get('2026-04-25')).toBe('Festa della Liberazione');
-    expect(h.get('2026-12-26')).toBe('Santo Stefano');
+    expect(h.get('2026-01-01')).toBe("New Year's Day");
+    expect(h.get('2026-04-06')).toBe('Easter Monday');
+    expect(h.get('2026-04-25')).toBe('Liberation Day');
+    expect(h.get('2026-12-26')).toBe("St. Stephen's Day");
   });
 
   describe('parseCustomHolidays', () => {
@@ -74,7 +74,7 @@ describe('holidays', () => {
       const map = buildHolidayMap('it', '12-24=Vigilia', [2025, 2026]);
       expect(map.get('2025-12-24')).toBe('Vigilia');
       expect(map.get('2026-12-24')).toBe('Vigilia');
-      expect(map.get('2026-12-25')).toBe('Natale');
+      expect(map.get('2026-12-25')).toBe('Christmas Day');
     });
 
     it('uses only the custom list in custom mode', () => {

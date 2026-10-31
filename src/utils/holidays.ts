@@ -25,21 +25,21 @@ export function getEasterSunday(year: number): string {
 export function getItalianHolidays(year: number): Map<string, string> {
   const easter = getEasterSunday(year);
   const fixed: [number, number, string][] = [
-    [1, 1, 'Capodanno'],
-    [1, 6, 'Epifania'],
-    [4, 25, 'Festa della Liberazione'],
-    [5, 1, 'Festa del Lavoro'],
-    [6, 2, 'Festa della Repubblica'],
-    [8, 15, 'Ferragosto'],
-    [11, 1, 'Ognissanti'],
-    [12, 8, 'Immacolata Concezione'],
-    [12, 25, 'Natale'],
-    [12, 26, 'Santo Stefano'],
+    [1, 1, "New Year's Day"],
+    [1, 6, 'Epiphany'],
+    [4, 25, "Liberation Day"],
+    [5, 1, "Labour Day"],
+    [6, 2, "Republic Day"],
+    [8, 15, 'Assumption Day'],
+    [11, 1, "All Saints' Day"],
+    [12, 8, 'Immaculate Conception'],
+    [12, 25, 'Christmas Day'],
+    [12, 26, "St. Stephen's Day"],
   ];
   const map = new Map<string, string>();
   fixed.forEach(([m, d, name]) => map.set(formatDateParts(year, m, d), name));
-  map.set(easter, 'Pasqua');
-  map.set(addDays(easter, 1), "Lunedì dell'Angelo");
+  map.set(easter, 'Easter Sunday');
+  map.set(addDays(easter, 1), 'Easter Monday');
   return map;
 }
 

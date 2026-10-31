@@ -26,16 +26,16 @@ describe('CalendarFilter Dual-Slot Comparison', () => {
     mockSetDataMask.mockClear();
   });
 
-  it('renders slot buttons for Tempo 1 and Tempo 2', () => {
+  it('renders slot buttons for Time 1 and Time 2', () => {
     const { getByText } = render(<CalendarFilter {...baseProps} />);
-    expect(getByText(/Tempo 1/i)).toBeTruthy();
-    expect(getByText(/Tempo 2/i)).toBeTruthy();
+    expect(getByText(/Time 1/i)).toBeTruthy();
+    expect(getByText(/Time 2/i)).toBeTruthy();
   });
 
-  it('switches active slot when clicking Tempo 2 and emits dual filter dataMask', () => {
+  it('switches active slot when clicking Time 2 and emits dual filter dataMask', () => {
     const { getByText, container } = render(<CalendarFilter {...baseProps} />);
 
-    // Click on day 15 in Tempo 1
+    // Click on day 15 in Time 1
     const dayCells = container.querySelectorAll('[data-date="2026-09-15"]');
     if (dayCells.length > 0) {
       fireEvent.click(dayCells[0]);
@@ -49,10 +49,10 @@ describe('CalendarFilter Dual-Slot Comparison', () => {
       }),
     );
 
-    // Switch to Tempo 2 slot
-    fireEvent.click(getByText(/Tempo 2/i));
+    // Switch to Time 2 slot
+    fireEvent.click(getByText(/Time 2/i));
 
-    // Click on another day in Tempo 2
+    // Click on another day in Time 2
     const dayCellT2 = container.querySelectorAll('[data-date="2026-09-10"]');
     if (dayCellT2.length > 0) {
       fireEvent.click(dayCellT2[0]);

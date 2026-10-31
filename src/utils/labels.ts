@@ -157,12 +157,12 @@ const EN: CalendarLabels = {
 
 /** `auto` follows the browser language: Italian when it starts with `it`, English otherwise */
 export function resolveLocale(locale: CalendarLocale | undefined): 'it' | 'en' {
-  if (locale === 'en') return 'en';
+  if (locale === 'it') return 'it';
   if (locale === 'auto') {
     const lang = typeof navigator !== 'undefined' ? navigator.language || '' : '';
     return lang.toLowerCase().startsWith('it') ? 'it' : 'en';
   }
-  return 'it';
+  return 'en';
 }
 
 export function getLabels(locale: CalendarLocale | undefined): CalendarLabels {

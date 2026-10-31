@@ -97,7 +97,7 @@ export function getDatesInYear(year: number): string[] {
 }
 
 /** Check if two dates represent the same year, month, and day */
-/** Texts and locale the range badge needs; Italian when omitted */
+/** Texts and locale the range badge needs; English when omitted */
 export interface BadgeLabels {
   intlLocale: string;
   selectedOne: string;

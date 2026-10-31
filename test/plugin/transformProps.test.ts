@@ -71,7 +71,7 @@ describe('SupersetPluginChartCalendarFilter transformProps', () => {
       customDefaultStartDate: undefined,
       customDefaultEndDate: undefined,
       inValueFormat: 'date',
-      locale: 'it',
+      locale: 'en',
       holidayMode: 'none',
       customHolidays: undefined,
       excludeHolidaysFromWorkdays: true,
@@ -180,7 +180,7 @@ describe('SupersetPluginChartCalendarFilter transformProps', () => {
       const result = build({ filter_type_mode: 'weird', scale_type: 'nope', locale: 'xx', holiday_mode: 'x' });
       expect(result.filterTypeMode).toBe('time_range');
       expect(result.scaleType).toBe('linear');
-      expect(result.locale).toBe('it');
+      expect(result.locale).toBe('en');
       expect(result.holidayMode).toBe('none');
     });
   });

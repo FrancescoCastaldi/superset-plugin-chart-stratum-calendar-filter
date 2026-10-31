@@ -24,6 +24,7 @@ const setDataMask = jest.fn();
 
 // The view opens on the month of the latest data point: April 2026
 const baseProps = {
+  locale: 'it',
   data: [
     { ds: '2026-04-01', metric: 10 },
     { ds: '2026-04-02', metric: 20 },
@@ -66,8 +67,8 @@ describe('CalendarFilter features', () => {
   describe('holidays', () => {
     it('names Italian holidays on the day cell', () => {
       const { container } = render(<CalendarFilter {...baseProps} holidayMode="it" />);
-      expect(cell(container, '2026-04-25').getAttribute('aria-label')).toContain('Festa della Liberazione');
-      expect(cell(container, '2026-04-06').getAttribute('aria-label')).toContain('Angelo');
+      expect(cell(container, '2026-04-25').getAttribute('aria-label')).toContain('Liberation Day');
+      expect(cell(container, '2026-04-06').getAttribute('aria-label')).toContain('Easter Monday');
       expect(cell(container, '2026-04-14').getAttribute('aria-label')).toBe('2026-04-14');
     });
 

@@ -56,10 +56,10 @@ if (-not $PluginPath) {
 
 $ResolvedPluginPath = (Resolve-Path $PluginPath).Path
 if (-not (Test-Path (Join-Path $ResolvedPluginPath "package.json"))) {
-    Write-Color "[ERRORE] Impossibile trovare package.json del plugin in '$ResolvedPluginPath'!" "Red"
+    Write-Color "[ERROR] Cannot find the plugin package.json in '$ResolvedPluginPath'!" "Red"
     exit 1
 }
-Write-Color "[INFO] Cartella Plugin (sorgente): $ResolvedPluginPath" "Green"
+Write-Color "[INFO] Plugin folder (source): $ResolvedPluginPath" "Green"
 
 $DefaultCompanyCandidate = "C:\Users\admmaps\superset_6_1_0\superset"
 $DefaultCandidate = if (Test-Path $DefaultCompanyCandidate) { $DefaultCompanyCandidate } else { "D:\Sviluppo\superset" }
@@ -81,7 +81,7 @@ if (-not $SupersetPath) {
     foreach ($cand in $Candidates) {
         if ($cand -and (Test-Path (Join-Path $cand "superset-frontend\package.json"))) {
             $SupersetPath = (Resolve-Path $cand).Path
-            Write-Color "[INFO] Trovata installazione Superset automatica: $SupersetPath" "Green"
+            Write-Color "[INFO] Superset installation found automatically: $SupersetPath" "Green"
             break
         }
     }
@@ -91,7 +91,7 @@ if (-not $SupersetPath) {
     if ($Force) {
         $SupersetPath = $DefaultCandidate
     } else {
-        Write-Color "Inserisci il percorso della cartella radice di Apache Superset" "Yellow"
+        Write-Color "Enter the path of the Apache Superset root folder" "Yellow"
         Write-Color "[Default: $DefaultCandidate]:" "Gray"
         $InputPath = Read-Host "Percorso Superset"
         if ([string]::IsNullOrWhiteSpace($InputPath)) {
@@ -103,7 +103,7 @@ if (-not $SupersetPath) {
 }
 
 if (-not (Test-Path $SupersetPath)) {
-    Write-Color "[ERRORE] Il percorso specificato '$SupersetPath' non esiste!" "Red"
+    Write-Color "[ERROR] The specified path '$SupersetPath' does not exist!" "Red"
     exit 1
 }
 
@@ -111,26 +111,26 @@ $ResolvedSupersetPath = (Resolve-Path $SupersetPath).Path
 $FrontendDir = Join-Path $ResolvedSupersetPath "superset-frontend"
 
 if (-not (Test-Path (Join-Path $FrontendDir "package.json"))) {
-    Write-Color "[ERRORE] 'superset-frontend\package.json' non trovato in '$ResolvedSupersetPath'!" "Red"
+    Write-Color "[ERROR] 'superset-frontend\package.json' not found in '$ResolvedSupersetPath'!" "Red"
     exit 1
 }
-Write-Color "[INFO] Cartella Target Superset: $ResolvedSupersetPath" "Green"
-Write-Color "[INFO] Cartella superset-frontend: $FrontendDir" "Gray"
+Write-Color "[INFO] Superset target folder: $ResolvedSupersetPath" "Green"
+Write-Color "[INFO] superset-frontend folder: $FrontendDir" "Gray"
 Write-Color ""
 
 if (-not $SkipBuild) {
-    Write-Color "=== FASE 1: Verifica Bundle e Sorgenti Plugin ===" "Cyan"
+    Write-Color "=== STEP 1: Verifying the bundle and plugin sources ===" "Cyan"
     $EsmDir = Join-Path $ResolvedPluginPath "esm"
     $LibDir = Join-Path $ResolvedPluginPath "lib"
     if ((Test-Path $EsmDir) -or (Test-Path $LibDir)) {
-        Write-Color "[OK] Bundle compilati rilevati (esm/lib). Installazione istantanea senza download dipendenze." "Green"
+        Write-Color "[OK] Compiled bundles found (esm/lib). Instant install, no dependency download." "Green"
     } else {
-        Write-Color "[OK] Sorgenti 'src/' pronti. Superset li compilera' direttamente tramite Webpack." "Green"
+        Write-Color "[OK] 'src/' sources ready. Superset will compile them directly through Webpack." "Green"
     }
     Write-Color ""
 }
 
-Write-Color "=== FASE 2: Copia e Sincronizzazione Plugin ===" "Cyan"
+Write-Color "=== STEP 2: Copy and sync the plugin ===" "Cyan"
 $PluginsTargetRoot = Join-Path $FrontendDir "plugins"
 if (-not (Test-Path $PluginsTargetRoot)) {
     New-Item -ItemType Directory -Path $PluginsTargetRoot -Force | Out-Null
@@ -138,7 +138,7 @@ if (-not (Test-Path $PluginsTargetRoot)) {
 
 $DestPluginDir = Join-Path $PluginsTargetRoot "superset-plugin-chart-calendar-filter"
 if (Test-Path $DestPluginDir) {
-    Write-Color "[INFO] Pulizia versione precedente in '$DestPluginDir'..." "Yellow"
+    Write-Color "[INFO] Cleaning the previous version in '$DestPluginDir'..." "Yellow"
     try {
         Remove-Item -Recurse -Force $DestPluginDir -ErrorAction Stop
     } catch {
@@ -157,17 +157,17 @@ foreach ($item in $ItemsToCopy) {
         $isDir = (Get-Item $srcItem) -is [System.IO.DirectoryInfo]
         if ($isDir) {
             Copy-Item -Path $srcItem -Destination $DestPluginDir -Recurse -Force
-            Write-Color "  [+] Copiata cartella: $item" "Gray"
+            Write-Color "  [+] Copied folder:    $item" "Gray"
         } else {
             Copy-Item -Path $srcItem -Destination $destItem -Force
-            Write-Color "  [+] Copiato file:     $item" "Gray"
+            Write-Color "  [+] Copied file:      $item" "Gray"
         }
     }
 }
-Write-Color "[SUCCESS] Plugin copiato con successo in '$DestPluginDir'" "Green"
+Write-Color "[SUCCESS] Plugin copied successfully to '$DestPluginDir'" "Green"
 Write-Color ""
 
-Write-Color "=== FASE 3: Registrazione in MainPreset.ts ===" "Cyan"
+Write-Color "=== STEP 3: Registration in MainPreset.ts ===" "Cyan"
 $PresetCandidates = @(
     (Join-Path $FrontendDir "src\visualizations\presets\MainPreset.ts"),
     (Join-Path $FrontendDir "src\visualizations\presets\MainPreset.js")
@@ -182,13 +182,13 @@ foreach ($pf in $PresetCandidates) {
 }
 
 if ($PresetFile) {
-    # Backup preventivo (MainPreset.ts.bak) prima di qualsiasi modifica
+    # Safety backup (MainPreset.ts.bak) before any change
     $BackupFile = "$PresetFile.bak"
     if (-not (Test-Path $BackupFile)) {
         Copy-Item -Path $PresetFile -Destination $BackupFile -Force
-        Write-Color "[SUCCESS] Creato backup di sicurezza: $(Split-Path -Leaf $BackupFile)" "Green"
+        Write-Color "[SUCCESS] Safety backup created: $(Split-Path -Leaf $BackupFile)" "Green"
     } else {
-        Write-Color "[INFO] Backup di sicurezza preesistente mantenuto: $(Split-Path -Leaf $BackupFile)" "Gray"
+        Write-Color "[INFO] Existing safety backup kept: $(Split-Path -Leaf $BackupFile)" "Gray"
     }
 
     $Content = [System.IO.File]::ReadAllText($PresetFile, [System.Text.Encoding]::UTF8)
@@ -202,21 +202,21 @@ if ($PresetFile) {
 
     $lines = [System.Collections.Generic.List[string]]::new($Content -split "\r?\n")
 
-    # Verifica se il file e' gia' configurato NELLA FORMA CANONICA (riga-esatta):
-    # una sola riga di import e una sola registrazione con chiave 'calendar_filter'.
-    # Le varianti legacy (riga alias 'superset-plugin-chart-calendar-filter', classe
-    # SupersetPluginChartCalendarFilter, righe con `.register()`, duplicati) vengono
-    # normalizzate alla forma canonica senza aggiungere righe nuove.
+    # Checks whether the file is already configured in the CANONICAL form (exact line):
+    # one import line and one registration with key 'calendar_filter'.
+    # Legacy variants (alias line 'superset-plugin-chart-calendar-filter', class
+    # SupersetPluginChartCalendarFilter, lines with `.register()`, duplicates) are
+    # normalized to the canonical form without adding new lines.
     $hasExactImport = ($lines -contains $TargetImport)
     $hasExactRegister = ($lines -contains $TargetRegister)
     $importCount = @($lines | Where-Object { $_ -match $ImportRegex }).Count
     $registerCount = @($lines | Where-Object { $_ -match $RegisterRegex }).Count
 
     if (-not $CleanReinstall -and $hasExactImport -and $hasExactRegister -and ($importCount -eq 1) -and ($registerCount -eq 1)) {
-        Write-Color "[INFO] MainPreset.ts e' gia' registrato correttamente (idempotente - nessuna modifica necessaria)." "Green"
+        Write-Color "[INFO] MainPreset.ts is already registered correctly (idempotent, no change needed)." "Green"
     } else {
-        # Normalizzazione: rimuove import/registrazioni esistenti (anche legacy o
-        # duplicate) e reinserisce la sola forma canonica con chiave 'calendar_filter'.
+        # Normalization: removes existing imports/registrations (also legacy or
+        # duplicate) and re-inserts only the canonical form with key 'calendar_filter'.
         $importLines = [System.Collections.Generic.List[string]]::new()
         $lastImportIdx = -1
         for ($i = 0; $i -lt $lines.Count; $i++) {
@@ -247,12 +247,12 @@ if ($PresetFile) {
 
         $NewContent = $finalLines -join $NL
         [System.IO.File]::WriteAllText($PresetFile, $NewContent, [System.Text.UTF8Encoding]::new($false))
-        Write-Color "[SUCCESS] MainPreset.ts normalizzato alla sola forma canonica (key: 'calendar_filter')." "Green"
+        Write-Color "[SUCCESS] MainPreset.ts normalized to the canonical form only (key: 'calendar_filter')." "Green"
     }
 }
 
 if (-not $SkipCleanCache) {
-    Write-Color "=== FASE 4: Pulizia Cache Frontend Webpack ===" "Cyan"
+    Write-Color "=== STEP 4: Clearing the Webpack frontend cache ===" "Cyan"
     $CacheDirs = @(
         (Join-Path $FrontendDir "node_modules\.cache"),
         (Join-Path $FrontendDir ".cache")
@@ -261,9 +261,9 @@ if (-not $SkipCleanCache) {
         if (Test-Path $cd) {
             try {
                 Remove-Item -Recurse -Force $cd -ErrorAction SilentlyContinue
-                Write-Color "[SUCCESS] Svuotata cache in: $cd" "Green"
+                Write-Color "[SUCCESS] Cache cleared: $cd" "Green"
             } catch {
-                Write-Color "[WARN] Impossibile svuotare $($cd): $_" "Yellow"
+                Write-Color "[WARN] Cannot clear $($cd): $_" "Yellow"
             }
         }
     }

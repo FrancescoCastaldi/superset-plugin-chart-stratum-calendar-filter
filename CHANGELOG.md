@@ -2,14 +2,14 @@
 
 ## [Unreleased]
 ### Fixed
-- **Control panel query controls**: rimosso il vincolo di metrica obbligatoria ereditato da sharedControls (`clearable: true, validators: []`), consentendo l'aggiornamento e il salvataggio del chart anche in modalita solo filtro o con selezione vuota.
-- **YearOverview component typings**: aggiunte le proprieta opzionali `selectedDatesT1` e `selectedDatesT2` nell'interfaccia `YearOverviewProps` per allineamento completo con il supporto temporale dual-slot.
+- **Control panel query controls**: removed the mandatory metric constraint inherited from sharedControls (`clearable: true, validators: []`), so the chart can be updated and saved even in filter-only mode or with an empty selection.
+- **YearOverview component typings**: added the optional properties `selectedDatesT1` and `selectedDatesT2` to the `YearOverviewProps` interface, to match the full dual-slot support.
 
 
 ## [0.1.16] - 2026-10-26
 ### Added
-- **Filtro temporale comparativo a doppio slot (Dual-Slot Comparison)**: Gestione integrata di Periodo di Riferimento (Tempo 1, Navy #0A224E) e Periodo di Confronto (Tempo 2, Magenta #E12B72) nello stesso componente calendario.
-- **Pulsanti di selezione rapida dello slot attivo**: Interfaccia ergonomica per commutare la maschera di selezione tra T1 e T2 e propagare i filtri tramite extraFormData per template Jinja e viste analitiche Superset.
+- **Dual-slot comparison filter (Dual-Slot Comparison)**: built-in management of the reference period (Time 1, Navy #0A224E) and the comparison period (Time 2, Magenta #E12B72) in the same calendar component.
+- **Quick slot buttons for the active slot**: an ergonomic way to switch the selection mask between T1 and T2 and propagate the filters through extraFormData for Jinja templates and Superset analytics views.
 
 
 ### Added
@@ -20,7 +20,7 @@
 - **Holidays**: Italian national holidays (Easter and Easter Monday computed) and/or a custom list (`2026-06-15`, or `12-24=Name` for every year), shown in red, named in tooltips and aria labels, and skipped by the working days shortcut (`holiday_mode`, `custom_holidays`, `exclude_holidays_from_workdays`).
 - **Color scales**: linear, logarithmic, square root or custom thresholds (`scale_type`, `scale_thresholds`).
 - **Several rows per day**: `value_aggregation` (sum, average, maximum, minimum, row count); without a metric each row counts as one record.
-- **Language**: `locale` (`it`, `en`, `auto`) for month names, weekdays and every button and tooltip text.
+- **Language**: `locale` (`en` by default, `it`, `auto`) for month names, weekdays and every button and tooltip text.
 - **Keyboard and screen reader support**: day cells are buttons with `aria-pressed` and a date label, arrow keys move by a day or a week, Enter/Space select, and each grid has a single tab stop.
 - **Drag selection in the chart view**, not only in the expanded dialog; releasing the button outside the calendar now ends the drag.
 - 94 new tests (164 in total).
@@ -36,7 +36,7 @@
 - **README**: describes the real click behavior (second click selects the range) and the real test counts.
 
 ### Changed
-- **Control panel labels are in English** (Query, Appearance, Layout, Holidays, Filter behaviour) instead of a mix of Italian and English; the heatmap date column is labelled optional, as it is. The calendar texts follow the `locale` option (default `it`, as before).
+- **Control panel labels are in English** (Query, Appearance, Layout, Holidays, Filter behaviour) instead of a mix of Italian and English; the heatmap date column is labelled optional, as it is. The calendar texts follow the `locale` option, which now defaults to `en`.
 - **Visual refinement** (same layout and emoji as before): one set of design tokens (colors come from the host Superset theme when it provides them, with a neutral slate fallback), hairline borders, uniform 28px controls, small uppercase weekday headers and tabular numerals. Day cells keep their heat color when selected (inset ring instead of a glow that hid the data), holidays get a corner dot, today an underline bar, and hover no longer scales cells over their neighbours. The year overview shows one card per month. Cells grow with the chart height (up to 56px) instead of leaving the bottom empty, and the 116px bottom padding is now only kept for the compact native filter.
 - **Smaller, modern bundler output (v0.1.15)**: `scripts/build.js` now passes `minify: true`, an explicit `target` of `es2020` / `chrome110` / `firefox110` / `safari16` and `sourcemap: 'linked'` to esbuild. The per-file dual output is preserved (`lib/` CommonJS for `main`, `esm/` for `module`), so imports from Superset and `MainPreset.ts` are unaffected while `lib/` + `esm/` shrink noticeably. `package.json` keeps `"sideEffects": false` so host bundlers can tree-shake unused modules.
 - **Build no longer chains the Jest suite**: the `postbuild` hook that ran `npm run test` after every `npm run build` has been removed, so builds and installer runs stay fast. Tests are still available on demand with `npm test`.
@@ -55,34 +55,34 @@
 ## [0.1.13] - 2026-10-07
 
 ### Fixed
-- **Registrazione Canonica Unica in `MainPreset.ts`**: `install-plugin.ps1` registra ora il plugin con la sola chiave canonica `calendar_filter`, rimuovendo dal template la riga alias legacy `superset-plugin-chart-calendar-filter` (resa obsoleta dalla normalizzazione). La verifica di idempotenza e' ora riga-esatta: le varianti legacy (riga alias, classe `SupersetPluginChartCalendarFilter`, righe con `.register()`, duplicati) vengono riconosciute e normalizzate alla forma canonica senza aggiungere righe nuove.
-- **Backup Preventivo `MainPreset.ts.bak`**: L'installer crea ora il backup di sicurezza di `MainPreset.ts` prima di qualsiasi modifica, in linea con il comportamento degli altri installer della suite.
+- **Single canonical registration in `MainPreset.ts`**: `install-plugin.ps1` now registers the plugin only under the canonical key `calendar_filter`, removing the legacy alias line `superset-plugin-chart-calendar-filter` from the template (made obsolete by the normalization). The idempotency check is now exact-line: legacy variants (alias line, class `SupersetPluginChartCalendarFilter`, `.register()` lines, duplicates) are recognized and normalized to the canonical form without adding new lines.
+- **Safety backup `MainPreset.ts.bak`**: the installer now creates a safety backup of `MainPreset.ts` before any change, like the other installers of the suite.
 
 ## [0.1.12] - 2026-10-02
 
 ### Added
-- **Standalone Interactive Calendar**: Enabled the calendar to render and function as a standalone visual filter on dashboards even without providing any query data (`data` empty). Previously, omitting a date column or query data would crash the visual into a blocking "Nessun dato disponibile" state. Now it renders a clean, neutral, fully interactive calendar initialized to the current year.
+- **Standalone Interactive Calendar**: Enabled the calendar to render and function as a standalone visual filter on dashboards even without providing any query data (`data` empty). Previously, omitting a date column or query data would crash the visual into a blocking "No data available" state. Now it renders a clean, neutral, fully interactive calendar initialized to the current year.
 
 ### Changed
 - **Data Panel Cleanup**: Removed the confusing and legacy `sections.legacyTimeseriesTime` (Time Column, Time Grain, Time Range) from the chart configuration panel, as they overlap confusingly with the concept of a calendar filter.
-- **Clarified Mandatory vs Optional Fields**: Renamed `groupby` to `Colonna Data Heatmap (Obbl. per Chart)` and `metric` to `Metrica Heatmap (Opzionale)` in the control panel to clearly guide the user.
+- **Clarified Mandatory vs Optional Fields**: Renamed `groupby` to `Heatmap date column (required for the chart)` and `metric` to `Heatmap metric (optional)` in the control panel to clearly guide the user.
 
 ## [0.1.11] - 2026-10-02
 
 ### Changed
-- **UI Optimization (Cognitive Load)**: Refactored `controlPanel.ts` to logically group control sections (`Visualizzazioni Base`, `Layout Avanzato`, `Comportamento Filtri`). Reduced visual clutter by setting `expanded: false` on advanced sections, making the configuration view cleaner and more approachable for end users.
+- **UI Optimization (Cognitive Load)**: Refactored `controlPanel.ts` to logically group control sections (`Base Visualizations`, `Advanced Layout`, `Filter Behaviour`). Reduced visual clutter by setting `expanded: false` on advanced sections, making the configuration view cleaner and more approachable for end users.
 
 ## [0.1.10] - 2026-10-01
 
 ### Fixed
-- **Correzione Chiave Registrazione nel Registry Superset (`calendar_filter`)**: Risolto bug critico per cui l'installer registrava il plugin con chiave `superset-plugin-chart-calendar-filter`, causando l'errore frontend `chartType="calendar_filter" — Error: Item with key "calendar_filter" is not registered.` Registrata tassativamente la chiave ufficiale `calendar_filter` (con alias `superset-plugin-chart-calendar-filter`).
-- **Esportazione Multipla `CalendarFilterPlugin` & `SupersetPluginChartCalendarFilter`**: Aggiunto l'export named `CalendarFilterPlugin` in `src/index.ts` ed `esm/index.js` per garantire compatibilità sia con gli import destrutturati di Superset 6.x (`import { CalendarFilterPlugin } from ...`) che con gli import di default.
-- **Risoluzione Warning TypeScript**: Rimosso import non utilizzato `validateNonEmpty` in `controlPanel.ts`.
+- **Registry key fix in Superset (`calendar_filter`)**: fixed a critical bug where the installer registered the plugin under the key `superset-plugin-chart-calendar-filter`, causing the frontend error `chartType="calendar_filter" — Error: Item with key "calendar_filter" is not registered.` The official key `calendar_filter` is now registered (with alias `superset-plugin-chart-calendar-filter`).
+- **Multiple exports of `CalendarFilterPlugin` & `SupersetPluginChartCalendarFilter`**: added the named export `CalendarFilterPlugin` in `src/index.ts` and `esm/index.js`, so both destructured imports (`import { CalendarFilterPlugin } from ...`, Superset 6.x) and default imports work.
+- **TypeScript warnings**: removed the unused `validateNonEmpty` import in `controlPanel.ts`.
 
 ## [0.1.9] - 2026-10-01
 
 ### Fixed
-- **Installer istantaneo senza npm install**: Rimosso il tentativo di esecuzione automatica di `npm install --legacy-peer-deps` in `install-plugin.ps1`. I sorgenti `src/` vengono ora copiati e registrati direttamente per la compilazione nativa Webpack di Superset, eliminando i tempi di attesa e i blocchi di rete sulla macchina cliente.
+- **Instant installer without npm install**: removed the automatic `npm install --legacy-peer-deps` attempt from `install-plugin.ps1`. The `src/` sources are now copied and registered directly for Superset's native Webpack build, removing waiting times and network blocks on the target machine.
 
 ## [0.1.8] - 2026-09-17
 
@@ -150,7 +150,7 @@
 - Configurable Emitted Filter Format: control panel option to choose between native time range (`time_range`) and an ad-hoc list of discrete dates (`IN` clause on column).
 - Macro Filters Shortcuts Bar: quick buttons for Year [YYYY], Current Month, Q1-Q4, Weekdays (Mon-Fri), and Clear.
 - Configurable Default Values: customizable initial filter selection (No filter, Today, Current Month, Current Year, Custom Range).
-- Italian Localization: full Italian translation of all UI components (weekdays, months, Today, Clear, Year/Month, Expand Modal buttons, and tooltips).
+- Italian localization: full Italian translation of all UI components (weekdays, months, Today, Clear, Year/Month, Expand Modal buttons, and tooltips), selectable with the `locale` option.
 - Unit Tests (44/44): expanded Jest test suite to 44 passing unit tests.
 
 ### Changed

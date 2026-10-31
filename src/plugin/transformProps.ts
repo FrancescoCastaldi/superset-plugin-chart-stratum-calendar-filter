@@ -70,7 +70,7 @@ export default function transformProps(chartProps: ChartProps) {
     ['date', 'datetime', 'epoch_ms'] as const,
     'date',
   );
-  const locale: CalendarLocale = oneOf(option('locale', 'locale'), ['it', 'en', 'auto'] as const, 'it');
+  const locale: CalendarLocale = oneOf(option('locale', 'locale'), ['it', 'en', 'auto'] as const, 'en');
   const holidayMode: HolidayMode = oneOf(
     option('holidayMode', 'holiday_mode'),
     ['none', 'it', 'custom'] as const,

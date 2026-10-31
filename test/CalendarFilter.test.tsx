@@ -58,24 +58,24 @@ describe('CalendarFilter', () => {
   });
 
   it('renders without crashing', () => {
-    const { container } = render(<CalendarFilter {...defaultProps} />);
+    const { container } = render(<CalendarFilter locale="it" {...defaultProps} />);
     expect(container).toBeTruthy();
   });
 
   it('shows the month title', () => {
-    const { getByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     // defaults to maxDate month (Dicembre 2026)
     expect(getByText(/dicembre 2026/i)).toBeTruthy();
   });
 
   it('shows day numbers in the grid', () => {
-    const { getAllByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getAllByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     const dayElements = getAllByText('01');
     expect(dayElements.length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders navigation and action buttons', () => {
-    const { getAllByRole } = render(<CalendarFilter {...defaultProps} />);
+    const { getAllByRole } = render(<CalendarFilter locale="it" {...defaultProps} />);
     const buttons = getAllByRole('button');
     // Prev, Year toggle, Today, Next
     expect(buttons.length).toBeGreaterThanOrEqual(4);
@@ -83,14 +83,14 @@ describe('CalendarFilter', () => {
 
   it('renders a generic calendar when no data is provided (Standalone mode)', () => {
     const { getByText } = render(
-      <CalendarFilter {...defaultProps} data={[]} />,
+      <CalendarFilter locale="it" {...defaultProps} data={[]} />,
     );
     // Deve renderizzare il bottone Oggi o Espandi invece dell'errore
     expect(getByText('Oggi')).toBeTruthy();
   });
 
   it('calls setDataMask when clicking a day', () => {
-    const { getAllByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getAllByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     const day15Elements = getAllByText('15');
     const day15 = day15Elements[0]?.closest('[role]') || day15Elements[0]?.parentElement || day15Elements[0];
     if (day15) {
@@ -120,7 +120,7 @@ describe('CalendarFilter', () => {
         selectedValues: { '2026-12-01': '2026-12-01' },
       },
     };
-    const { getAllByText } = render(<CalendarFilter {...propsWithSelection} />);
+    const { getAllByText } = render(<CalendarFilter locale="it" {...propsWithSelection} />);
     const dayElements = getAllByText('01');
     const day1 = dayElements[0]?.closest('[role]') || dayElements[0]?.parentElement || dayElements[0];
     if (day1) {
@@ -140,7 +140,7 @@ describe('CalendarFilter', () => {
         selectedValues: { '2026-12-01': '2026-12-01' },
       },
     };
-    const { getAllByText } = render(<CalendarFilter {...propsWithSelection} />);
+    const { getAllByText } = render(<CalendarFilter locale="it" {...propsWithSelection} />);
     const dayElements = getAllByText('05');
     const day5 = dayElements[0]?.closest('[role]') || dayElements[0]?.parentElement || dayElements[0];
     if (day5) {
@@ -159,7 +159,7 @@ describe('CalendarFilter', () => {
   });
 
   it('navigates to previous month', () => {
-    const { getByLabelText, getByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByLabelText, getByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     const prevButton = getByLabelText('Precedente');
     fireEvent.click(prevButton);
     // maxDate is 2026-12-01, so initial month is December. Previous is November.
@@ -167,7 +167,7 @@ describe('CalendarFilter', () => {
   });
 
   it('navigates to next month', () => {
-    const { getByLabelText, getByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByLabelText, getByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     // Initial state is December 2026 (maxDate).
     // Go to previous month (November) so Next button becomes enabled
     fireEvent.click(getByLabelText('Precedente'));
@@ -187,32 +187,32 @@ describe('CalendarFilter', () => {
         selectedValues: { '2024-01-01': '2024-01-01' },
       },
     };
-    const { container } = render(<CalendarFilter {...propsWithSelection} />);
+    const { container } = render(<CalendarFilter locale="it" {...propsWithSelection} />);
     expect(container).toBeTruthy();
   });
 
   // ── New feature tests ──────────────────────────────────────────────────────
 
   it('shows year dropdown when showYearDropdown is true', () => {
-    const { getByLabelText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByLabelText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     const yearSelect = getByLabelText('Seleziona anno');
     expect(yearSelect).toBeTruthy();
   });
 
   it('hides year dropdown when showYearDropdown is false', () => {
     const { queryByLabelText } = render(
-      <CalendarFilter {...defaultProps} showYearDropdown={false} />,
+      <CalendarFilter locale="it" {...defaultProps} showYearDropdown={false} />,
     );
     expect(queryByLabelText('Seleziona anno')).toBeNull();
   });
 
   it('shows view toggle button when enableOverview is true', () => {
-    const { getByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     expect(getByText('Anno')).toBeTruthy();
   });
 
   it('switches to year overview when clicking toggle', () => {
-    const { getByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     fireEvent.click(getByText('Anno'));
     // Should now show year view with month labels
     expect(getByText('gen')).toBeTruthy();
@@ -220,13 +220,13 @@ describe('CalendarFilter', () => {
   });
 
   it('shows Today button and navigates to today', () => {
-    const { getByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     expect(getByText('Oggi')).toBeTruthy();
   });
 
   it('shows week numbers when showWeekNumbers is true', () => {
     const { container } = render(
-      <CalendarFilter {...defaultProps} showWeekNumbers={true} />,
+      <CalendarFilter locale="it" {...defaultProps} showWeekNumbers={true} />,
     );
     // Week numbers are rendered
     expect(container).toBeTruthy();
@@ -240,7 +240,7 @@ describe('CalendarFilter', () => {
         selectedValues: { '2024-01-01': '2024-01-01' },
       },
     };
-    const { container } = render(<CalendarFilter {...propsWithSelection} />);
+    const { container } = render(<CalendarFilter locale="it" {...propsWithSelection} />);
     expect(container.textContent).toMatch(/1 gen 2024/i);
     expect(container.textContent).toContain('Azzera');
   });
@@ -253,7 +253,7 @@ describe('CalendarFilter', () => {
         selectedValues: { '2024-01-01': '2024-01-01' },
       },
     };
-    const { getByText } = render(<CalendarFilter {...propsWithSelection} />);
+    const { getByText } = render(<CalendarFilter locale="it" {...propsWithSelection} />);
     fireEvent.click(getByText('Azzera'));
     expect(mockSetDataMask).toHaveBeenCalledWith({
       extraFormData: { filters: [] },
@@ -263,13 +263,13 @@ describe('CalendarFilter', () => {
 
   it('renders with Monday as first day of week', () => {
     const { container } = render(
-      <CalendarFilter {...defaultProps} firstDayOfWeek={1} />,
+      <CalendarFilter locale="it" {...defaultProps} firstDayOfWeek={1} />,
     );
     expect(container).toBeTruthy();
   });
 
   it('shows tooltip on hover over a data day', () => {
-    const { getAllByText, getByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getAllByText, getByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     // Find day element with number 01 (Dec 01 has data value 5)
     const dayElements = getAllByText('01');
     const day01 = dayElements[0]?.closest('[role]') || dayElements[0]?.parentElement || dayElements[0];
@@ -284,7 +284,7 @@ describe('CalendarFilter', () => {
 
   it('renders with minimal config (no optional features)', () => {
     const { container } = render(
-      <CalendarFilter
+      <CalendarFilter locale="it"
         {...defaultProps}
         showYearDropdown={false}
         enableOverview={false}
@@ -297,7 +297,7 @@ describe('CalendarFilter', () => {
 
   it('emits time_range filter when filterTypeMode is time_range', () => {
     const { getAllByText } = render(
-      <CalendarFilter {...defaultProps} filterTypeMode="time_range" />,
+      <CalendarFilter locale="it" {...defaultProps} filterTypeMode="time_range" />,
     );
     const day15Elements = getAllByText('15');
     const day15 = day15Elements[0]?.closest('[role]') || day15Elements[0]?.parentElement || day15Elements[0];
@@ -317,7 +317,7 @@ describe('CalendarFilter', () => {
 
   it('emits in_clause filter when filterTypeMode is in_clause', () => {
     const { getAllByText } = render(
-      <CalendarFilter {...defaultProps} filterTypeMode="in_clause" />,
+      <CalendarFilter locale="it" {...defaultProps} filterTypeMode="in_clause" />,
     );
     const day15Elements = getAllByText('15');
     const day15 = day15Elements[0]?.closest('[role]') || day15Elements[0]?.parentElement || day15Elements[0];
@@ -343,7 +343,7 @@ describe('CalendarFilter', () => {
   it('triggers default value selection when defaultValueMode is today', () => {
     mockSetDataMask.mockClear();
     render(
-      <CalendarFilter
+      <CalendarFilter locale="it"
         {...defaultProps}
         defaultValueMode="today"
         filterState={{ value: null, selectedValues: null }}
@@ -354,7 +354,7 @@ describe('CalendarFilter', () => {
 
   it('renders macro filter shortcuts and triggers Q1 selection', () => {
     const { getByText } = render(
-      <CalendarFilter {...defaultProps} showMacroShortcuts={true} />,
+      <CalendarFilter locale="it" {...defaultProps} showMacroShortcuts={true} />,
     );
     const q1Btn = getByText('📊 Q1');
     expect(q1Btn).toBeTruthy();
@@ -363,7 +363,7 @@ describe('CalendarFilter', () => {
   });
 
   it('opens expandable modal view when Espandi button is clicked and toggles between month and year view', () => {
-    const { getByText, getByRole, getAllByText } = render(<CalendarFilter {...defaultProps} />);
+    const { getByText, getByRole, getAllByText } = render(<CalendarFilter locale="it" {...defaultProps} />);
     const espandiBtn = getByText('🖥️ Espandi');
     fireEvent.click(espandiBtn);
     expect(getAllByText(/vista mensile/i).length).toBeGreaterThanOrEqual(1);

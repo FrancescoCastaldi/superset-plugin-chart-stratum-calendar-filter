@@ -203,7 +203,7 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               label: t('Calendar language'),
               description: t('Language of month names, weekdays and buttons. Auto follows the browser.'),
-              default: 'it',
+              default: 'en',
               clearable: false,
               renderTrigger: true,
               choices: [

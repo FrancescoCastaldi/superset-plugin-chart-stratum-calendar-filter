@@ -84,7 +84,7 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     filterState,
     dateColumn,
     inValueFormat = 'date',
-    locale = 'it',
+    locale = 'en',
     holidayMode = 'none',
     customHolidays,
     excludeHolidaysFromWorkdays = true,
@@ -466,18 +466,18 @@ export default function CalendarFilter(props: CalendarFilterProps) {
               $slot="T1"
               $isActive={activeSlot === 'T1'}
               onClick={() => setActiveSlot('T1')}
-              title="Seleziona periodo Tempo 1 (Riferimento)"
+              title="Select period Time 1 (Reference)"
             >
-              🔵 Tempo 1 {selectedDatesT1.size > 0 ? `(${selectedDatesT1.size})` : ''}
+              🔵 Time 1 {selectedDatesT1.size > 0 ? `(${selectedDatesT1.size})` : ''}
             </SlotButton>
             <SlotButton
               type="button"
               $slot="T2"
               $isActive={activeSlot === 'T2'}
               onClick={() => setActiveSlot('T2')}
-              title="Seleziona periodo Tempo 2 (Confronto)"
+              title="Select period Time 2 (Comparison)"
             >
-              🟣 Tempo 2 {selectedDatesT2.size > 0 ? `(${selectedDatesT2.size})` : ''}
+              🟣 Time 2 {selectedDatesT2.size > 0 ? `(${selectedDatesT2.size})` : ''}
             </SlotButton>
           </SlotSwitcher>
           {selectedDates.size > 0 && (
