@@ -22,13 +22,13 @@ import { Global } from '@emotion/react';
 import {
   Styles, NativeFilterTriggerContainer, NativeFilterPillButton, CalendarHeader, HeaderLeft, HeaderCenter, HeaderRight,
   NavButton, TodayButton, MonthTitle, SelectionBadge, ClearButton, YearSelect, MonthSelect, ViewToggleButton, ConfigHint,
-  SlotSwitcher, SlotButton,
 } from './styles/CalendarFilter.styles';
 import CalendarModal from './components/CalendarModal';
 import MacroShortcuts from './components/MacroShortcuts';
 import CalendarTooltip from './components/CalendarTooltip';
 import MonthGrid from './components/MonthGrid';
 import YearOverview from './components/YearOverview';
+import PeriodSummary from './components/PeriodSummary';
 import HeatLegend from './components/HeatLegend';
 import { useCalendarData } from './hooks/useCalendarData';
 import { useSelectionMask } from './hooks/useSelectionMask';
@@ -57,6 +57,8 @@ import {
   getWeekdayLabels,
 } from './utils/labels';
 import { DEFAULT_PRESETS } from './utils/presets';
+import { resolvePeriodNames } from './utils/periods';
+import type { PeriodSlot } from './utils/periods';
 
 
 
@@ -93,6 +95,9 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     enabledPresets = DEFAULT_PRESETS,
     valueAggregation = 'sum',
     metricKey,
+    referenceLabel,
+    comparisonLabel,
+    enableComparison = true,
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -140,6 +145,7 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     setActiveSlot,
     emitSelection,
     clearSelection,
+    clearSlot,
     handleDayToggle,
     handleDragStart,
     handleDragEnter,
@@ -153,6 +159,32 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     customDefaultStartDate,
     customDefaultEndDate,
     inValueFormat,
+    enableComparison,
+  );
+
+  const periodNames = useMemo(
+    () => resolvePeriodNames({ referenceLabel, comparisonLabel }, labels),
+    [referenceLabel, comparisonLabel, labels],
+  );
+  const periodDates = useMemo(
+    () => ({ T1: selectedDatesT1, T2: selectedDatesT2 }),
+    [selectedDatesT1, selectedDatesT2],
+  );
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
+
+  const renderPeriods = (stacked: boolean, afterSelect?: (slot: PeriodSlot) => void) => (
+    <PeriodSummary
+      names={periodNames}
+      dates={periodDates}
+      activeSlot={activeSlot}
+      comparisonEnabled={enableComparison}
+      stacked={stacked}
+      onSelect={slot => {
+        setActiveSlot(slot);
+        afterSelect?.(slot);
+      }}
+      onClear={clearSlot}
+    />
   );
 
   const hasInitialized = useRef(false);
@@ -310,10 +342,11 @@ export default function CalendarFilter(props: CalendarFilterProps) {
   const cellHeight = useMemo(() => {
     if (!height || height <= 120) return baseCellHeight;
     const shortcuts = showMacroShortcuts ? (enabledPresets.length > 0 ? 84 : 48) : 0;
-    const chrome = 56 + shortcuts + (legend ? 38 : 0) + 36 + 20;
+    const periodRow = enableComparison ? 52 : 0;
+    const chrome = 56 + shortcuts + periodRow + (legend ? 38 : 0) + 36 + 20;
     const perRow = Math.floor((height - chrome) / 6) - 4;
     return Math.min(56, Math.max(baseCellHeight, perRow));
-  }, [height, baseCellHeight, showMacroShortcuts, enabledPresets.length, legend]);
+  }, [height, baseCellHeight, showMacroShortcuts, enableComparison, enabledPresets.length, legend]);
   const missingColumnHint = !dateColumn ? <ConfigHint role="status">{labels.noColumn}</ConfigHint> : null;
 
   const isCompactNativeFilter = Boolean(formData?.inView || (height && height <= 120));
@@ -328,7 +361,7 @@ export default function CalendarFilter(props: CalendarFilterProps) {
 
     return (
       <CalendarDisplayContext.Provider value={display}>
-      <Styles height={height} width={width} ref={containerRef}>
+      <Styles height={height} width={width} ref={containerRef} $compact>
         <Global styles={`
           [data-test="filterbar-action-buttons"] {
             pointer-events: none;
@@ -339,10 +372,14 @@ export default function CalendarFilter(props: CalendarFilterProps) {
         `} />
         {missingColumnHint}
         <NativeFilterTriggerContainer>
-          <NativeFilterPillButton type="button" onClick={() => setIsModalOpen(true)}>
-            <span>📅 {selectionText}</span>
-            <span style={{ fontSize: 10, opacity: 0.6 }}>▼</span>
-          </NativeFilterPillButton>
+          {enableComparison ? (
+            renderPeriods(true, () => setIsModalOpen(true))
+          ) : (
+            <NativeFilterPillButton type="button" onClick={() => setIsModalOpen(true)}>
+              <span>📅 {selectionText}</span>
+              <span style={{ fontSize: 10, opacity: 0.6 }}>▼</span>
+            </NativeFilterPillButton>
+          )}
         </NativeFilterTriggerContainer>
 
         {/* Expandable Modal Popover */}
@@ -373,7 +410,8 @@ export default function CalendarFilter(props: CalendarFilterProps) {
             selectedDatesT1={selectedDatesT1}
             selectedDatesT2={selectedDatesT2}
             todayStr={todayStr}
-            onClose={() => setIsModalOpen(false)}
+            onClose={closeModal}
+            periods={enableComparison ? renderPeriods(false) : null}
             onPrev={goPrevMonth}
             onNext={goNextMonth}
             onPrevYear={() => setViewYear(y => y - 1)}
@@ -460,31 +498,13 @@ export default function CalendarFilter(props: CalendarFilterProps) {
           <MonthTitle>
             {viewMode === 'year' ? viewYear : monthLabel}
           </MonthTitle>
-          <SlotSwitcher>
-            <SlotButton
-              type="button"
-              $slot="T1"
-              $isActive={activeSlot === 'T1'}
-              onClick={() => setActiveSlot('T1')}
-              title="Select period Time 1 (Reference)"
-            >
-              🔵 Time 1 {selectedDatesT1.size > 0 ? `(${selectedDatesT1.size})` : ''}
-            </SlotButton>
-            <SlotButton
-              type="button"
-              $slot="T2"
-              $isActive={activeSlot === 'T2'}
-              onClick={() => setActiveSlot('T2')}
-              title="Select period Time 2 (Comparison)"
-            >
-              🟣 Time 2 {selectedDatesT2.size > 0 ? `(${selectedDatesT2.size})` : ''}
-            </SlotButton>
-          </SlotSwitcher>
           {selectedDates.size > 0 && (
             <>
-              <SelectionBadge>
-                {selectedDates.size}{selectionBadgeText ? ` · ${selectionBadgeText}` : ''}
-              </SelectionBadge>
+              {!enableComparison && (
+                <SelectionBadge>
+                  {selectedDates.size}{selectionBadgeText ? ` · ${selectionBadgeText}` : ''}
+                </SelectionBadge>
+              )}
               <ClearButton type="button" onClick={clearSelection}>
                 {labels.clear}
               </ClearButton>
@@ -510,6 +530,11 @@ export default function CalendarFilter(props: CalendarFilterProps) {
           </NavButton>
         </HeaderRight>
       </CalendarHeader>
+
+      {/* Reference and comparison periods */}
+      {enableComparison && (
+        <div style={{ padding: '8px 16px 0', flexShrink: 0 }}>{renderPeriods(false)}</div>
+      )}
 
       {/* Macro Filter Shortcuts */}
       {showMacroShortcuts && (
@@ -605,7 +630,8 @@ export default function CalendarFilter(props: CalendarFilterProps) {
           selectedDatesT1={selectedDatesT1}
           selectedDatesT2={selectedDatesT2}
           todayStr={todayStr}
-          onClose={() => setIsModalOpen(false)}
+          onClose={closeModal}
+          periods={enableComparison ? renderPeriods(false) : null}
           onPrev={goPrevMonth}
           onNext={goNextMonth}
           onPrevYear={() => setViewYear(y => y - 1)}

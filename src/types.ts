@@ -67,6 +67,12 @@ interface CalendarFilterCustomizeProps {
   valueAggregation?: ValueAggregation;
   /** Result column holding the metric (defaults to the first numeric column) */
   metricKey?: string;
+  /** Name of the reference (current) period; empty uses the default of the calendar language */
+  referenceLabel?: string;
+  /** Name of the comparison period; empty uses the default of the calendar language */
+  comparisonLabel?: string;
+  /** Let users pick a second, comparison period and show the cards naming both periods (default true) */
+  enableComparison?: boolean;
 }
 
 export type CalendarFilterQueryFormData = QueryFormData &

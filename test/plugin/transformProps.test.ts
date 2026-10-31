@@ -80,6 +80,7 @@ describe('SupersetPluginChartCalendarFilter transformProps', () => {
       enabledPresets: ['last_7_days', 'last_30_days', 'last_month', 'year_to_date'],
       valueAggregation: 'sum',
       metricKey: 'sum__num',
+      enableComparison: true,
       data: [
         { ds: '2024-01-01', sum__num: 10 },
         { ds: '2024-01-02', sum__num: 20 },
@@ -183,5 +184,42 @@ describe('SupersetPluginChartCalendarFilter transformProps', () => {
       expect(result.locale).toBe('en');
       expect(result.holidayMode).toBe('none');
     });
+  });
+});
+
+describe('period options', () => {
+  const build = (options: Record<string, unknown>) =>
+    transformProps(
+      new ChartProps({
+        formData: { viz_type: 'calendar_filter', ...options },
+        width: 400,
+        height: 300,
+        theme: supersetTheme,
+        queriesData: [{ data: [] }],
+      } as any),
+    );
+
+  it('enables the comparison period and leaves the labels empty by default', () => {
+    const result = build({});
+    expect(result.enableComparison).toBe(true);
+    expect(result.referenceLabel).toBeUndefined();
+    expect(result.comparisonLabel).toBeUndefined();
+  });
+
+  it('reads the labels camelCased or in snake case and trims them', () => {
+    expect(build({ referenceLabel: ' This year ' }).referenceLabel).toBe('This year');
+    expect(build({ comparison_label: 'Last year' }).comparisonLabel).toBe('Last year');
+  });
+
+  it('treats blank labels as not set', () => {
+    const result = build({ referenceLabel: '   ', comparisonLabel: '' });
+    expect(result.referenceLabel).toBeUndefined();
+    expect(result.comparisonLabel).toBeUndefined();
+  });
+
+  it('turns the comparison period off only when explicitly disabled', () => {
+    expect(build({ enableComparison: false }).enableComparison).toBe(false);
+    expect(build({ enable_comparison: false }).enableComparison).toBe(false);
+    expect(build({ enableComparison: null }).enableComparison).toBe(true);
   });
 });

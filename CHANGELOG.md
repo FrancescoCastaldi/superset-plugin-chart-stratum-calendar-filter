@@ -1,10 +1,27 @@
 # Changelog
 
 ## [Unreleased]
-### Fixed
-- **Control panel query controls**: removed the mandatory metric constraint inherited from sharedControls (`clearable: true, validators: []`), so the chart can be updated and saved even in filter-only mode or with an empty selection.
-- **YearOverview component typings**: added the optional properties `selectedDatesT1` and `selectedDatesT2` to the `YearOverviewProps` interface, to match the full dual-slot support.
 
+## [0.1.17] - 2026-10-31
+### Added
+- **Clear reference and comparison periods**: the two periods now have cards that show a name, a color, the range covered and the number of days (for example "Current period, 1 Sep 2026 - 15 Sep 2026 · 15 days"). Clicking a card makes it the period the next click or drag edits, and the `✕` on a card clears only that period. The cards replace the old "Time 1" / "Time 2" switch in the chart header, and also appear in the expanded dialog, where the comparison period could not be chosen before.
+- **Period labels** (`reference_label`, `comparison_label`, section "Periods"): rename the periods, for example "This year" and "Last year". Both are optional text fields; empty uses the default of the calendar language ("Current period" / "Comparison period", "Periodo corrente" / "Periodo di confronto").
+- **Enable comparison period** (`enable_comparison`, default on): turn it off for a single-period filter. The cards disappear, a stored comparison period is ignored and no `time_compare` is emitted.
+- **Native filter bar layout**: the filter shows the two period cards (one per row) instead of a single pill, and clicking a card opens the dialog on that period. With the comparison period disabled the single pill is kept.
+- **Escape closes the calendar dialog.**
+- `PeriodSummary` component and `utils/periods.ts` (names, colors, summaries); `useSelectionMask` exposes `clearSlot(slot)`.
+- 21 new tests (187 in total).
+
+### Fixed
+- **Blank space under the filter in the native filter bar**: the compact layout reserved a fixed 116px bottom padding and, when the host reported a height above 120px, a fixed height, so the filter left empty space even with the calendar closed. The compact layout is now exactly as tall as its content.
+- **Query controls**: removed the mandatory metric constraint inherited from sharedControls (`clearable: true, validators: []`), so the chart can be updated and saved even in filter-only mode or with an empty selection.
+- **YearOverview component typings**: added the optional properties `selectedDatesT1` and `selectedDatesT2` to the `YearOverviewProps` interface, to match the full dual-slot support.
+- **README** listed `it` as the default `locale`; the default is `en`.
+
+### Changed
+- **Control panel reorganized**: a new "Periods" section sits right after "Query"; "Shortcuts" (shortcut buttons and relative dates) is split from "Filter behaviour"; labels use sentence case and shorter descriptions. Every new option is optional and the defaults keep existing charts unchanged (comparison stays on).
+- **Dialog title** reads "Calendar filter: Month view (...)" and follows the calendar language; the em dash is gone from the plugin name and texts.
+- Period colors are defined once (`PERIOD_COLORS`) and shared by the cards and the selected days.
 
 ## [0.1.16] - 2026-10-26
 ### Added

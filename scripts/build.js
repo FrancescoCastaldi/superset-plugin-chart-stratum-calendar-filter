@@ -41,12 +41,14 @@ const ENTRY_POINTS = [
   'src/utils/holidays.ts',
   'src/utils/labels.ts',
   'src/utils/presets.ts',
+  'src/utils/periods.ts',
   'src/components/HeatLegend.tsx',
   'src/components/MacroShortcuts.tsx',
   'src/components/CalendarTooltip.tsx',
   'src/components/MonthGrid.tsx',
   'src/components/YearOverview.tsx',
   'src/components/CalendarModal.tsx',
+  'src/components/PeriodSummary.tsx',
 ];
 
 function getArg(name) {

@@ -33,6 +33,16 @@ export interface CalendarLabels {
   currentMonth: string;
   workdays: string;
   noColumn: string;
+  calendarTitle: string;
+  /** Default name of the reference period, used when the control panel label is empty */
+  currentPeriod: string;
+  /** Default name of the comparison period, used when the control panel label is empty */
+  comparisonPeriod: string;
+  periodNotSet: string;
+  periodsGroup: string;
+  periodDays: (n: number) => string;
+  selectPeriod: (name: string) => string;
+  clearPeriod: (name: string) => string;
   tooltipValue: string;
   tooltipMax: string;
   tooltipPercent: string;
@@ -75,6 +85,14 @@ const IT: CalendarLabels = {
   currentMonth: '📅 Mese Corrente',
   workdays: '💼 Feriali',
   noColumn: 'Imposta la colonna data nelle opzioni del grafico: senza colonna il filtro non viene applicato.',
+  calendarTitle: 'Filtro calendario',
+  currentPeriod: 'Periodo corrente',
+  comparisonPeriod: 'Periodo di confronto',
+  periodNotSet: 'Non impostato',
+  periodsGroup: 'Periodi selezionati',
+  periodDays: n => (n === 1 ? '1 giorno' : `${n} giorni`),
+  selectPeriod: name => `Seleziona: ${name}`,
+  clearPeriod: name => `Azzera: ${name}`,
   tooltipValue: 'Valore:',
   tooltipMax: 'Massimo:',
   tooltipPercent: '% del max:',
@@ -130,6 +148,14 @@ const EN: CalendarLabels = {
   currentMonth: '📅 Current month',
   workdays: '💼 Working days',
   noColumn: 'Set the date column in the chart options: without a column the filter is not applied.',
+  calendarTitle: 'Calendar filter',
+  currentPeriod: 'Current period',
+  comparisonPeriod: 'Comparison period',
+  periodNotSet: 'Not set',
+  periodsGroup: 'Selected periods',
+  periodDays: n => (n === 1 ? '1 day' : `${n} days`),
+  selectPeriod: name => `Select: ${name}`,
+  clearPeriod: name => `Clear: ${name}`,
   tooltipValue: 'Value:',
   tooltipMax: 'Maximum:',
   tooltipPercent: '% of max:',

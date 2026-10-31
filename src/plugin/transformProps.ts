@@ -35,6 +35,11 @@ function nameOf(value: unknown): string | undefined {
   return undefined;
 }
 
+/** Free text typed in the control panel, `undefined` when empty so the translated default applies */
+function textOption(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
 function oneOf<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {
   return allowed.includes(value as T) ? (value as T) : fallback;
 }
@@ -132,6 +137,9 @@ export default function transformProps(chartProps: ChartProps) {
     enabledPresets: normalizePresets(option('enabledPresets', 'enabled_presets')),
     valueAggregation,
     metricKey: nameOf(option('metric', 'metric')),
+    referenceLabel: textOption(option('referenceLabel', 'reference_label')),
+    comparisonLabel: textOption(option('comparisonLabel', 'comparison_label')),
+    enableComparison: option('enableComparison', 'enable_comparison') !== false,
     setDataMask,
     filterState,
     dateColumn,

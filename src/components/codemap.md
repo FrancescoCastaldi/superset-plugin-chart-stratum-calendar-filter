@@ -19,6 +19,7 @@ Houses modular React subcomponents used by `CalendarFilter.tsx` to render granul
 - `CalendarModal.tsx`: Full-screen expandable modal with anti-overlap positioning and view switcher (Month/Year).
 - `CalendarTooltip.tsx`: Absolute-positioned hover tooltip displaying date, metric value, and percentage contribution.
 - `HeatLegend.tsx`: Color ramp with lowest/highest value and the no-data swatch.
+- `PeriodSummary.tsx`: Cards naming the reference and comparison periods, with their range, day count and per-period clear button.
 - `MacroShortcuts.tsx`: Quick selection toolbar buttons (year, month, Q1-Q4, working days, relative periods, clear).
 
 ## Flow

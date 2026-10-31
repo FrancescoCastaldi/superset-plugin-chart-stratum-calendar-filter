@@ -3,6 +3,7 @@ import { formatDateKey, getDatesInMonth, getDatesInYear, getDatesBetween } from 
 import { DefaultValueMode } from '../types';
 import { getPresetDates, PRESET_IDS, PresetId } from '../utils/presets';
 import { buildExtraFormData, FilterTypeMode, InValueFormat } from '../utils/filterMask';
+import type { PeriodSlot } from '../utils/periods';
 
 export function useSelectionMask(
   filterState: any,
@@ -13,8 +14,11 @@ export function useSelectionMask(
   customDefaultStartDate?: string,
   customDefaultEndDate?: string,
   inValueFormat: InValueFormat = 'date',
+  comparisonEnabled = true,
 ) {
-  const [activeSlot, setActiveSlot] = useState<'T1' | 'T2'>('T1');
+  const [requestedSlot, setActiveSlot] = useState<PeriodSlot>('T1');
+  // Without a comparison period the reference period is the only one that can be edited
+  const activeSlot: PeriodSlot = comparisonEnabled ? requestedSlot : 'T1';
   const lastEmittedT1Ref = useRef<string[]>([]);
   const lastEmittedT2Ref = useRef<string[]>([]);
 
@@ -36,12 +40,13 @@ export function useSelectionMask(
 
   // Selected dates for T2
   const selectedDatesT2: Set<string> = useMemo(() => {
+    if (!comparisonEnabled) return new Set<string>();
     if (filterState?.selectedDatesT2) {
       const vals = Array.isArray(filterState.selectedDatesT2) ? filterState.selectedDatesT2 : Object.keys(filterState.selectedDatesT2);
       return new Set(vals.map(String));
     }
     return new Set<string>(lastEmittedT2Ref.current);
-  }, [filterState]);
+  }, [filterState, comparisonEnabled]);
 
   // Unified dual selection emission handler
   const emitSelectionDual = useCallback(
@@ -141,6 +146,18 @@ export function useSelectionMask(
     }
   }, [activeSlot, emitSelectionDual, selectedDatesT1, selectedDatesT2]);
 
+  /** Clear one period without touching the other, whichever is active */
+  const clearSlot = useCallback(
+    (slot: PeriodSlot) => {
+      if (slot === 'T2') {
+        emitSelectionDual(Array.from(selectedDatesT1), []);
+      } else {
+        emitSelectionDual([], Array.from(selectedDatesT2));
+      }
+    },
+    [emitSelectionDual, selectedDatesT1, selectedDatesT2],
+  );
+
   const clearAllSlots = useCallback(() => {
     emitSelectionDual([], []);
   }, [emitSelectionDual]);
@@ -228,6 +245,7 @@ export function useSelectionMask(
     emitSelection,
     emitSelectionDual,
     clearSelection,
+    clearSlot,
     clearAllSlots,
     handleDayToggle,
     handleDragStart,

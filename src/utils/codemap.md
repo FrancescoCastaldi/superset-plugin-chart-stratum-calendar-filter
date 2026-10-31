@@ -17,6 +17,7 @@ Pure utility functions for date parsing, formatting, ISO week calculations, date
   - `addDays`, `getWeekDates`, `isContiguousSelection`, `dateKeyToEpochMs`: DST-safe day arithmetic and week/contiguity helpers.
   - `filterMask.ts` - `buildExtraFormData(dates, column, mode, inFormat)`: builds the Superset filter. Ranges end on the day after the last selected day because Superset ranges are `[start, end)`; `auto` mode sends a range for contiguous days and a list otherwise; `inFormat` shapes list values (date, datetime, epoch ms). No column means no filter.
   - `presets.ts` - relative periods (`getPresetRange`, `getPresetDates`, `normalizePresets`).
+  - `periods.ts` - reference/comparison period names, colors and one-line summaries (`resolvePeriodNames`, `summarizePeriod`).
   - `holidays.ts` - Italian national holidays with computed Easter, plus a parser for custom lists (`YYYY-MM-DD` or `MM-DD`, optional `=Name`).
   - `colorScale.ts` - linear / log / sqrt / threshold intensity scales and `getHeatStyle` (null for days without data).
   - `labels.ts` - Italian and English texts, Intl month and weekday names, and `CalendarDisplayContext` (labels, holidays, heat colors, week/month selection) shared by the components.

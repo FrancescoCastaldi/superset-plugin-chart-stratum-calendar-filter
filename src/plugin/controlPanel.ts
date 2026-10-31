@@ -111,6 +111,55 @@ const config: ControlPanelConfig = {
       ],
     },
     {
+      label: t('Periods'),
+      description: t(
+        'The calendar manages two periods: the reference (current) one and an optional comparison one. Rename them here.',
+      ),
+      expanded: true,
+      controlSetRows: [
+        [
+          {
+            name: 'enable_comparison',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Enable comparison period'),
+              default: true,
+              renderTrigger: true,
+              description: t(
+                'Lets users pick a second period to compare with the reference one. Turn it off for a plain single-period filter.',
+              ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'reference_label',
+            config: {
+              type: 'TextControl',
+              label: t('Reference period label'),
+              default: '',
+              placeholder: 'Current period',
+              renderTrigger: true,
+              description: t('Name of the reference (current) period. Leave empty for the default.'),
+              visibility: ({ controls }: any) => controls?.enable_comparison?.value !== false,
+            },
+          },
+          {
+            name: 'comparison_label',
+            config: {
+              type: 'TextControl',
+              label: t('Comparison period label'),
+              default: '',
+              placeholder: 'Comparison period',
+              renderTrigger: true,
+              description: t('Name of the comparison period. Leave empty for the default.'),
+              visibility: ({ controls }: any) => controls?.enable_comparison?.value !== false,
+            },
+          },
+        ],
+      ],
+    },
+    {
       label: t('Appearance'),
       expanded: true,
       controlSetRows: [
@@ -119,7 +168,7 @@ const config: ControlPanelConfig = {
             name: 'color_scheme',
             config: {
               type: 'SelectControl',
-              label: t('Color Scheme'),
+              label: t('Color scheme'),
               default: 'supersetColors',
               choices: [
                 ['supersetColors', 'Superset Default'],
@@ -130,7 +179,7 @@ const config: ControlPanelConfig = {
                 ['purples', 'Purples'],
               ],
               renderTrigger: true,
-              description: t('Color scheme for the calendar heatmap'),
+              description: t('Palette used to color the days by value.'),
             },
           },
         ],
@@ -173,10 +222,10 @@ const config: ControlPanelConfig = {
             name: 'show_legend',
             config: {
               type: 'CheckboxControl',
-              label: t('Show Legend'),
+              label: t('Show legend'),
               renderTrigger: true,
               default: true,
-              description: t('Show or hide the color legend'),
+              description: t('Show the color legend under the calendar.'),
             },
           },
         ],
@@ -185,14 +234,14 @@ const config: ControlPanelConfig = {
             name: 'first_day_of_week',
             config: {
               type: 'SelectControl',
-              label: t('First Day of Week'),
+              label: t('First day of the week'),
               default: 0,
               choices: [
                 [0, 'Sunday'],
                 [1, 'Monday'],
               ],
               renderTrigger: true,
-              description: t('Which day to start the week on'),
+              description: t('Day each week row starts on.'),
             },
           },
         ],
@@ -225,10 +274,10 @@ const config: ControlPanelConfig = {
             name: 'show_week_numbers',
             config: {
               type: 'CheckboxControl',
-              label: t('Show Week Numbers'),
+              label: t('Show week numbers'),
               renderTrigger: true,
               default: false,
-              description: t('Display ISO week numbers on the left side of each row; clicking one selects that week'),
+              description: t('Display ISO week numbers on the left of each row; clicking one selects that week.'),
             },
           },
         ],
@@ -237,10 +286,10 @@ const config: ControlPanelConfig = {
             name: 'show_year_dropdown',
             config: {
               type: 'CheckboxControl',
-              label: t('Show Year Dropdown'),
+              label: t('Show year selector'),
               renderTrigger: true,
               default: true,
-              description: t('Show a dropdown to jump to any year'),
+              description: t('Show a dropdown to jump to any year.'),
             },
           },
         ],
@@ -249,10 +298,10 @@ const config: ControlPanelConfig = {
             name: 'enable_overview',
             config: {
               type: 'CheckboxControl',
-              label: t('Enable Year Overview'),
+              label: t('Enable year overview'),
               renderTrigger: true,
               default: true,
-              description: t('Allow switching between single-month and full-year overview'),
+              description: t('Allow switching between the single-month and the full-year view.'),
             },
           },
         ],
@@ -261,14 +310,14 @@ const config: ControlPanelConfig = {
             name: 'cell_density',
             config: {
               type: 'SelectControl',
-              label: t('Cell Density'),
+              label: t('Cell size'),
               default: 'compact',
               choices: [
                 ['compact', 'Compact'],
                 ['normal', 'Normal'],
               ],
               renderTrigger: true,
-              description: t('Calendar cell size: Compact for tighter fit, Normal for larger cells'),
+              description: t('Compact fits more in small spaces, Normal gives larger cells.'),
             },
           },
         ],
@@ -417,16 +466,22 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+      ],
+    },
+    {
+      label: t('Shortcuts'),
+      expanded: false,
+      controlSetRows: [
         [
           {
             name: 'show_macro_shortcuts',
             config: {
               type: 'CheckboxControl',
-              label: t('Show shortcuts'),
+              label: t('Show shortcut buttons'),
               renderTrigger: true,
               default: true,
               description: t(
-                'Show quick-selection buttons (year, month, quarters, working days and the relative dates below)',
+                'Show quick-selection buttons (year, month, quarters, working days and the relative dates chosen below)',
               ),
             },
           },

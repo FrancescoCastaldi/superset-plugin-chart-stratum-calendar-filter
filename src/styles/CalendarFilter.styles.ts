@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { CalendarFilterStylesProps } from '../types';
+import { PERIOD_COLORS, PeriodSlot } from '../utils/periods';
 
 /**
  * Design tokens. Every color comes from the host theme when it provides one
@@ -72,9 +73,14 @@ const controlBase = ({ theme }: { theme?: any }) => {
 `;
 };
 
-export const Styles = styled.div<CalendarFilterStylesProps>`
-  height: ${({ height }) => (height && height > 120 ? `${height}px` : 'auto')};
-  min-height: ${({ height }) => (height && height > 120 ? `${height}px` : '36px')};
+/**
+ * Root of the chart. In the compact (native filter) layout the box is exactly as tall as its
+ * content: no fixed height, no minimum and no bottom padding, so a closed filter leaves no blank
+ * space under it. The full chart fills the height the dashboard gives it.
+ */
+export const Styles = styled.div<CalendarFilterStylesProps & { $compact?: boolean }>`
+  height: ${({ height, $compact }) => (!$compact && height && height > 120 ? `${height}px` : 'auto')};
+  min-height: ${({ height, $compact }) => (!$compact && height && height > 120 ? `${height}px` : '0')};
   width: ${({ width }) => (width ? `${width}px` : '100%')};
   display: flex;
   flex-direction: column;
@@ -84,12 +90,13 @@ export const Styles = styled.div<CalendarFilterStylesProps>`
   overflow: hidden;
   position: relative;
   box-sizing: border-box;
-  padding-bottom: ${({ height }) => (height && height > 120 ? '0' : '116px')};
 `;
 
 export const NativeFilterTriggerContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
   width: 100%;
   padding: 2px 0;
 `;
@@ -132,38 +139,103 @@ export const HeaderRight = styled.div`
   gap: 8px;
 `;
 
-export const SlotSwitcher = styled.div`
-  display: inline-flex;
-  align-items: center;
-  background: ${tk('bgMuted')};
-  border: 1px solid ${tk('border')};
-  border-radius: 8px;
-  padding: 2px;
-  gap: 2px;
+/** Group holding the cards of the reference and comparison periods */
+export const PeriodList = styled.div<{ $stacked?: boolean }>`
+  display: flex;
+  flex-direction: ${({ $stacked }) => ($stacked ? 'column' : 'row')};
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
-export const SlotButton = styled.button<{ $isActive: boolean; $slot: 'T1' | 'T2' }>`
-  border: none;
+export const PeriodCard = styled.div<{ $slot: PeriodSlot; $active: boolean }>`
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 200px;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid ${({ $active, $slot }) => ($active ? PERIOD_COLORS[$slot] : 'rgba(148, 163, 184, 0.55)')};
+  border-left: 4px solid ${({ $slot }) => PERIOD_COLORS[$slot]};
   border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: ${({ $isActive }) => ($isActive ? 700 : 500)};
+  background: ${({ $active, $slot }) =>
+    $active ? `color-mix(in srgb, ${PERIOD_COLORS[$slot]} 10%, transparent)` : 'transparent'};
+  box-shadow: ${({ $active, $slot }) => ($active ? `0 0 0 1px ${PERIOD_COLORS[$slot]}` : 'none')};
+  transition: background 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+`;
+
+export const PeriodSelectButton = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  margin: 0;
+  font-family: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid ${tk('accent')};
+    outline-offset: -2px;
+  }
+`;
+
+export const PeriodName = styled.span<{ $slot: PeriodSlot }>`
+  max-width: 100%;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: ${({ $slot }) => PERIOD_COLORS[$slot]};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const PeriodRange = styled.span<{ $empty?: boolean }>`
+  max-width: 100%;
+  font-size: 12px;
+  font-weight: ${({ $empty }) => ($empty ? 400 : 600)};
+  font-style: ${({ $empty }) => ($empty ? 'italic' : 'normal')};
+  color: ${({ $empty, theme }) => ($empty ? tokens(theme).textFaint : tokens(theme).text)};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const PeriodClearButton = styled.button`
+  align-self: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-  background: ${({ $isActive, $slot }) => {
-    if (!$isActive) return 'transparent';
-    return $slot === 'T1' ? '#0A224E' : '#E12B72';
-  }};
-  color: ${({ $isActive }) => ($isActive ? '#ffffff' : '#475569')};
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  color: ${tk('textMuted')};
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
 
   &:hover {
-    background: ${({ $isActive, $slot }) => {
-      if ($isActive) return $slot === 'T1' ? '#0A224E' : '#E12B72';
-      return 'rgba(0, 0, 0, 0.05)';
-    }};
+    color: ${tk('danger')};
+    background: ${tk('bgHover')};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${tk('accent')};
   }
 `;
 
@@ -367,21 +439,21 @@ export const DayCell = styled.div<DayCellProps>`
     if (!isSelected) return '';
     if ($selectionSlot === 'T1') {
       return `
-    box-shadow: inset 0 0 0 2px #0A224E, inset 0 0 0 3px rgba(255, 255, 255, 0.85);
+    box-shadow: inset 0 0 0 2px ${PERIOD_COLORS.T1}, inset 0 0 0 3px rgba(255, 255, 255, 0.85);
     font-weight: 700;
     z-index: 1;
     `;
     }
     if ($selectionSlot === 'T2') {
       return `
-    box-shadow: inset 0 0 0 2px #E12B72, inset 0 0 0 3px rgba(255, 255, 255, 0.85);
+    box-shadow: inset 0 0 0 2px ${PERIOD_COLORS.T2}, inset 0 0 0 3px rgba(255, 255, 255, 0.85);
     font-weight: 700;
     z-index: 1;
     `;
     }
     if ($selectionSlot === 'BOTH') {
       return `
-    box-shadow: inset 0 0 0 2px #0A224E, inset 0 0 0 4px #E12B72;
+    box-shadow: inset 0 0 0 2px ${PERIOD_COLORS.T1}, inset 0 0 0 4px ${PERIOD_COLORS.T2};
     font-weight: 700;
     z-index: 1;
     `;

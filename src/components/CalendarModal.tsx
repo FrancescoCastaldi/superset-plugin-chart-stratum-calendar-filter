@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   NavButton,
   TodayButton,
@@ -98,6 +98,8 @@ interface CalendarModalProps {
   legend?: React.ReactNode;
   /** Enable keyboard access + drag-to-select inside the modal */
   interactive?: boolean;
+  /** Cards of the reference and comparison periods, shown under the header */
+  periods?: React.ReactNode;
 }
 
 /** Expandable modal popover with header navigation, macro shortcuts and calendar body */
@@ -149,15 +151,26 @@ export default function CalendarModal({
   onSelectPreset,
   legend,
   interactive = false,
+  periods,
 }: CalendarModalProps) {
   const { labels } = useCalendarDisplay();
+
+  // Escape closes the dialog, like any popover
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
         <ModalHeader>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <ModalTitle>
-              📅 Calendar Filter — {viewMode === 'year' ? `${labels.yearView} ${viewYear}` : `${labels.monthView} (${monthLabel})`}
+              📅 {labels.calendarTitle}: {viewMode === 'year' ? `${labels.yearView} ${viewYear}` : `${labels.monthView} (${monthLabel})`}
             </ModalTitle>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
               {viewMode === 'month' && (
@@ -231,6 +244,7 @@ export default function CalendarModal({
             {labels.close}
           </ModalCloseButton>
         </ModalHeader>
+        {periods && <div style={{ padding: '10px 16px 0' }}>{periods}</div>}
         {showMacroShortcuts && (
           <MacroShortcuts
             viewYear={viewYear}
