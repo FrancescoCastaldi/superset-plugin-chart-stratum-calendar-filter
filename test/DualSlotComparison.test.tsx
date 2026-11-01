@@ -102,10 +102,13 @@ describe('CalendarFilter reference and comparison periods', () => {
       expect.objectContaining({
         extraFormData: expect.objectContaining({
           time_compare: ['2026-09-10 : 2026-09-11'],
-          custom_form_data: expect.objectContaining({
-            t1_dates: ['2026-09-15'],
-            t2_dates: ['2026-09-10'],
-          }),
+          custom_form_data: [
+            expect.objectContaining({
+              t1_range: '2026-09-15 : 2026-09-16',
+              t2_range: '2026-09-10 : 2026-09-11',
+              period_labels: { reference: 'Current period', comparison: 'Comparison period' },
+            }),
+          ],
         }),
         filterState: expect.objectContaining({
           selectedDatesT1: ['2026-09-15'],
@@ -126,6 +129,23 @@ describe('CalendarFilter reference and comparison periods', () => {
     fireEvent.click(container.querySelectorAll('[data-date="2026-09-10"]')[0]);
     mask = mockSetDataMask.mock.calls[mockSetDataMask.mock.calls.length - 1][0];
     expect(mask.filterState.label).toMatch(/^This year: .* | Last year: .*10.*2026 · 1 day$/);
+  });
+
+  it('sends the names and readable ranges of the periods to the charts, as a list Superset keeps', () => {
+    const { container } = render(<CalendarFilter {...baseProps} locale="it" referenceLabel="Quest'anno" comparisonLabel="Anno scorso" />);
+    fireEvent.click(container.querySelectorAll('[data-date="2026-09-15"]')[0]);
+    fireEvent.click(cardOf(container, 'T2').querySelector('button') as HTMLElement);
+    fireEvent.click(container.querySelectorAll('[data-date="2026-09-10"]')[0]);
+    const mask = mockSetDataMask.mock.calls[mockSetDataMask.mock.calls.length - 1][0];
+    const custom = mask.extraFormData.custom_form_data;
+    // Superset drops append keys that are not iterable, so it must be an array
+    expect(Array.isArray(custom)).toBe(true);
+    expect(custom[0].period_labels).toEqual({ reference: "Quest'anno", comparison: 'Anno scorso' });
+    expect(custom[0].period_text.reference).toMatch(/15.*2026/);
+    expect(custom[0].period_text.comparison).toMatch(/10.*2026/);
+    expect(custom[0].locale).toBe('it');
+    // not every selected day
+    expect(custom[0].t1_dates).toBeUndefined();
   });
 
   it('does not send a label when nothing is selected', () => {

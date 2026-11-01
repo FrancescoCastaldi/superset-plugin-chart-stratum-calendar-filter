@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-01
+### Added
+- **Period names and readable ranges for the charts**: `extraFormData.custom_form_data` now carries `period_labels` (the names chosen in the control panel), `period_text` (ranges such as `1 Jan - 31 Mar 2008`, in the calendar language, English or Italian) and `locale`, so charts can name the two periods instead of printing raw dates. StratumBar, StratumHeatmap and StratumKPI do.
+
+### Changed
+- **`custom_form_data` is a list with one object** and no longer holds `t1_dates` and `t2_dates`. Superset only keeps this key when it is iterable, so as an object it never reached the charts of a dashboard; the list of every selected day is not sent to each chart any more. `t1_range`, `t2_range` and `active_slot` are still there.
+- 1 new test (191 in total).
+
 ## [0.1.18] - 2026-11-01
 ### Added
 - **Short applied filters text**: the filter now sends `filterState.label` (for example `Current period: 1 Jan - 31 Mar 2008 · 91 days | Comparison period: 1 Jan - 31 Mar 2007 · 90 days`), which the dashboard shows in the applied filters list of each chart. Before, that list printed every selected day, hundreds of dates for a year. It uses the period labels and is left out when nothing is selected.

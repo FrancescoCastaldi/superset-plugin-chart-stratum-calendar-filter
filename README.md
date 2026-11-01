@@ -225,6 +225,8 @@ The reference period becomes the dashboard time range and the comparison period 
 
 With the comparison left off, or the donut set to its own preset, the charts keep showing one period.
 
+**Names and dates in the charts.** `custom_form_data` carries the period names and readable ranges, so StratumBar, StratumHeatmap and StratumKPI name the periods in the language of the calendar (`locale`, English or Italian): the Bar legend reads `Current period · 1 Jan - 31 Mar 2008`, the KPI label `vs Comparison period · 1 Jan - 31 Mar 2007`. The names are the *Reference period label* and *Comparison period label* options. Labels typed in a chart's own control panel win. The list of every selected day is no longer sent.
+
 ---
 
 ## 🔄 Cross-Filter API Payload
@@ -260,7 +262,12 @@ setDataMask({
 extraFormData: {
   time_range: '2026-04-01 : 2026-04-16',                // reference period
   time_compare: ['2025-04-01 : 2025-04-16'],            // comparison period
-  custom_form_data: { t1_dates, t2_dates, t1_range, t2_range, active_slot },
+  custom_form_data: [{                                  // a list: Superset drops this key when it is an object
+    version: 1,
+    period_labels: { reference: 'Current period', comparison: 'Comparison period' },
+    period_text: { reference: '1 Jan - 31 Mar 2008', comparison: '1 Jan - 31 Mar 2007' },
+    t1_range, t2_range, active_slot, locale,
+  }],
 }
 ```
 

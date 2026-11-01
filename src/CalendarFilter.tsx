@@ -55,6 +55,7 @@ import {
   getLabels,
   getMonthName,
   getWeekdayLabels,
+  resolveLocale,
 } from './utils/labels';
 import { DEFAULT_PRESETS } from './utils/presets';
 import { resolvePeriodNames, summarizePeriod } from './utils/periods';
@@ -144,18 +145,29 @@ export default function CalendarFilter(props: CalendarFilterProps) {
 
   // Short text for the applied filters list of the dashboard, instead of one entry per selected day
   const describeSelection = useCallback(
-    (t1: string[], t2: string[]): string => {
+    (t1: string[], t2: string[]) => {
       const first = summarizePeriod(t1, labels);
       const second = summarizePeriod(t2, labels);
-      if (!enableComparison) return first.text;
-      return [
-        t1.length > 0 ? `${periodNames.T1}: ${first.text}` : '',
-        t2.length > 0 ? `${periodNames.T2}: ${second.text}` : '',
-      ]
-        .filter(Boolean)
-        .join(' | ');
+      const label = !enableComparison
+        ? first.text
+        : [
+            t1.length > 0 ? `${periodNames.T1}: ${first.text}` : '',
+            t2.length > 0 ? `${periodNames.T2}: ${second.text}` : '',
+          ]
+            .filter(Boolean)
+            .join(' | ');
+      return {
+        label,
+        // What charts show for the two periods: the names chosen here and the ranges in the calendar language
+        custom: {
+          version: 1,
+          period_labels: { reference: periodNames.T1, comparison: periodNames.T2 },
+          period_text: { reference: first.range, comparison: second.range },
+          locale: resolveLocale(locale),
+        },
+      };
     },
-    [labels, periodNames, enableComparison],
+    [labels, periodNames, enableComparison, locale],
   );
 
   const {

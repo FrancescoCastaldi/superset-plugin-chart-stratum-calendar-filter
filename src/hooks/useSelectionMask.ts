@@ -15,8 +15,11 @@ export function useSelectionMask(
   customDefaultEndDate?: string,
   inValueFormat: InValueFormat = 'date',
   comparisonEnabled = true,
-  /** Text for `filterState.label`, which Superset shows in the applied filters list instead of every day */
-  describe?: (t1: string[], t2: string[]) => string,
+  /**
+   * Text for `filterState.label`, which Superset shows in the applied filters list instead of every day,
+   * and the names and readable ranges of the two periods that charts can show (`custom`).
+   */
+  describe?: (t1: string[], t2: string[]) => { label: string; custom?: Record<string, unknown> },
 ) {
   const [requestedSlot, setActiveSlot] = useState<PeriodSlot>('T1');
   // Without a comparison period the reference period is the only one that can be edited
@@ -61,19 +64,28 @@ export function useSelectionMask(
 
       const extraFormData = buildExtraFormData(sortedT1, dateColumn, filterTypeMode, inValueFormat);
 
-      // Add time_compare and custom_form_data if T2 is present
+      const described = describe && (sortedT1.length > 0 || sortedT2.length > 0) ? describe(sortedT1, sortedT2) : null;
+
+      // The comparison period travels as an explicit range in time_compare
+      let t2Range: unknown;
       if (sortedT2.length > 0 && dateColumn) {
         const t2RangeExtra = buildExtraFormData(sortedT2, dateColumn, 'time_range', inValueFormat);
-        if (t2RangeExtra.time_range) {
-          (extraFormData as any).time_compare = [t2RangeExtra.time_range];
+        t2Range = t2RangeExtra.time_range;
+        if (t2Range) {
+          (extraFormData as any).time_compare = [t2Range];
         }
-        (extraFormData as any).custom_form_data = {
-          t1_dates: sortedT1,
-          t2_dates: sortedT2,
-          t1_range: extraFormData.time_range,
-          t2_range: t2RangeExtra.time_range,
-          active_slot: activeSlot,
-        };
+      }
+      // Superset only keeps this key when it is a list, hence the single element array. It carries what
+      // a chart needs to name the two periods: their labels and readable ranges, not every selected day.
+      if (dateColumn && (described?.custom || t2Range)) {
+        (extraFormData as any).custom_form_data = [
+          {
+            ...described?.custom,
+            t1_range: extraFormData.time_range,
+            t2_range: t2Range,
+            active_slot: activeSlot,
+          },
+        ];
       }
 
       let selectedValues: Record<string, string> | null = null;
@@ -88,8 +100,8 @@ export function useSelectionMask(
         value: sortedT1.length ? sortedT1 : null,
         selectedValues,
       };
-      if (describe && (sortedT1.length > 0 || sortedT2.length > 0)) {
-        filterStatePayload.label = describe(sortedT1, sortedT2);
+      if (described) {
+        filterStatePayload.label = described.label;
       }
       if (sortedT2.length > 0) {
         filterStatePayload.selectedDatesT1 = sortedT1;
