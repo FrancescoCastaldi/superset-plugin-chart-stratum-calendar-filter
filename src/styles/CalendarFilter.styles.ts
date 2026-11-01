@@ -213,6 +213,25 @@ export const PeriodRange = styled.span<{ $empty?: boolean }>`
   white-space: nowrap;
 `;
 
+/** Row of one-click ways to fill the comparison period */
+export const QuickCompareRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+  font-size: 11px;
+  color: ${tk('textMuted')};
+`;
+
+export const QuickCompareButton = styled.button`
+  ${controlBase}
+  height: 24px;
+  padding: 0 8px;
+  font-size: 11px;
+`;
+
 export const PeriodClearButton = styled.button`
   align-self: center;
   width: 22px;

@@ -4,6 +4,8 @@ import { DefaultValueMode } from '../types';
 import { getPresetDates, PRESET_IDS, PresetId } from '../utils/presets';
 import { buildExtraFormData, FilterTypeMode, InValueFormat } from '../utils/filterMask';
 import type { PeriodSlot } from '../utils/periods';
+import { deriveComparison } from '../utils/comparePeriod';
+import type { ComparisonShift } from '../utils/comparePeriod';
 
 export function useSelectionMask(
   filterState: any,
@@ -20,7 +22,11 @@ export function useSelectionMask(
    * and the names and readable ranges of the two periods that charts can show (`custom`).
    */
   describe?: (t1: string[], t2: string[]) => { label: string; custom?: Record<string, unknown> },
+  /** Fill the comparison period from the reference one whenever the reference changes */
+  autoComparison: ComparisonShift | 'none' = 'none',
 ) {
+  // Once the user has chosen or cleared the comparison period by hand, the automatic fill leaves it alone
+  const comparisonChosenByHand = useRef(false);
   const [requestedSlot, setActiveSlot] = useState<PeriodSlot>('T1');
   // Without a comparison period the reference period is the only one that can be edited
   const activeSlot: PeriodSlot = comparisonEnabled ? requestedSlot : 'T1';
@@ -120,14 +126,29 @@ export function useSelectionMask(
   const emitSelection = useCallback(
     (datesArray: string[]) => {
       if (activeSlot === 'T2') {
+        comparisonChosenByHand.current = true;
         const t1 = selectedDatesT1.size > 0 ? Array.from(selectedDatesT1) : lastEmittedT1Ref.current;
         emitSelectionDual(t1, datesArray);
       } else {
+        if (comparisonEnabled && autoComparison !== 'none' && !comparisonChosenByHand.current) {
+          emitSelectionDual(datesArray, deriveComparison(datesArray, autoComparison));
+          return;
+        }
         const t2 = selectedDatesT2.size > 0 ? Array.from(selectedDatesT2) : lastEmittedT2Ref.current;
         emitSelectionDual(datesArray, t2);
       }
     },
-    [activeSlot, emitSelectionDual, selectedDatesT1, selectedDatesT2],
+    [activeSlot, emitSelectionDual, selectedDatesT1, selectedDatesT2, autoComparison, comparisonEnabled],
+  );
+
+  /** Set the comparison period from the reference one (the quick buttons) */
+  const compareWith = useCallback(
+    (shift: ComparisonShift) => {
+      if (selectedDatesT1.size === 0) return;
+      comparisonChosenByHand.current = true;
+      emitSelectionDual(Array.from(selectedDatesT1), deriveComparison(selectedDatesT1, shift));
+    },
+    [emitSelectionDual, selectedDatesT1],
   );
 
   // Initialize Default Value on Mount if not already selected
@@ -167,6 +188,7 @@ export function useSelectionMask(
   const clearSlot = useCallback(
     (slot: PeriodSlot) => {
       if (slot === 'T2') {
+        comparisonChosenByHand.current = true;
         emitSelectionDual(Array.from(selectedDatesT1), []);
       } else {
         emitSelectionDual([], Array.from(selectedDatesT2));
@@ -263,6 +285,7 @@ export function useSelectionMask(
     emitSelectionDual,
     clearSelection,
     clearSlot,
+    compareWith,
     clearAllSlots,
     handleDayToggle,
     handleDragStart,

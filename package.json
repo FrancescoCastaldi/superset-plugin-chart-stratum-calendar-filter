@@ -1,6 +1,6 @@
 {
   "name": "superset-plugin-chart-calendar-filter",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "StratumCalendar: Calendar Filter Plugin for Apache Superset with interactive calendar heatmap and cross-filtering",
   "sideEffects": false,
   "main": "lib/index.js",

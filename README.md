@@ -188,6 +188,7 @@ Launch `http://localhost:8088`, create a new chart, and select **Calendar Filter
 | `date_column` | Query | Empty | **Filter target column.** Any dataset column. Defaults to the heatmap column, or in a native filter to the column it is bound to. |
 | `value_aggregation` | Query | `sum` | How several rows of the same day become one value: sum, average, maximum, minimum, row count. |
 | `enable_comparison` | Periods | `true` | Lets users pick a comparison period next to the reference one and shows the two period cards. |
+| `auto_comparison` | Periods | `none` | Fills the comparison period from the reference one whenever the reference changes: `previous_period` (the days right before, as many as the reference spans) or `previous_year` (the same days one year earlier). A comparison period the user picked or cleared by hand is left alone. |
 | `reference_label` | Periods | Empty | Name of the reference (current) period. Empty uses *Current period* in the calendar language. |
 | `comparison_label` | Periods | Empty | Name of the comparison period. Empty uses *Comparison period* in the calendar language. |
 | `color_scheme` | Appearance | `supersetColors` | Palette: `supersetColors`, `greens`, `blues`, `oranges`, `reds`, `purples`. |
@@ -212,7 +213,15 @@ Launch `http://localhost:8088`, create a new chart, and select **Calendar Filter
 
 ---
 
-## 🧭 Charts that follow both periods
+## 🧭 How to see the comparison
+
+1. **Pick the reference period** in the calendar (days, a range, a week, a month, a shortcut).
+2. **Click a quick button** under the period cards, *Previous period* or *Same period last year*, and the comparison period is filled for you. You can also pick it by hand on the *Comparison period* card, or set *Fill the comparison period automatically* in the control panel to skip the click.
+3. **Apply the filter.** The charts show both periods.
+
+A card marked `⚠ no data` means none of its days has data in the dataset, so the charts have nothing to show for it (an empty comparison is also called out in the legend and labels of the charts). Pick days inside the range of your data.
+
+### Charts that follow both periods
 
 The reference period becomes the dashboard time range and the comparison period travels as `time_compare` (an explicit range). A chart uses it when its own comparison is set to follow the dashboard:
 

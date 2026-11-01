@@ -133,6 +133,27 @@ const config: ControlPanelConfig = {
         ],
         [
           {
+            name: 'auto_comparison',
+            config: {
+              type: 'SelectControl',
+              label: t('Fill the comparison period automatically'),
+              description: t(
+                'When the reference period changes, set the comparison period from it: the days right before, or the same days one year earlier. Users can still change it. Off by default; the quick buttons under the period cards do the same on demand.',
+              ),
+              default: 'none',
+              clearable: false,
+              renderTrigger: true,
+              choices: [
+                ['none', t('Off (pick it yourself or use the quick buttons)')],
+                ['previous_period', t('Previous period (the days right before)')],
+                ['previous_year', t('Same period last year')],
+              ],
+              visibility: ({ controls }: any) => controls?.enable_comparison?.value !== false,
+            },
+          },
+        ],
+        [
+          {
             name: 'reference_label',
             config: {
               type: 'TextControl',

@@ -99,6 +99,7 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     referenceLabel,
     comparisonLabel,
     enableComparison = true,
+    autoComparison = 'none',
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -179,6 +180,7 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     emitSelection,
     clearSelection,
     clearSlot,
+    compareWith,
     handleDayToggle,
     handleDragStart,
     handleDragEnter,
@@ -194,6 +196,7 @@ export default function CalendarFilter(props: CalendarFilterProps) {
     inValueFormat,
     enableComparison,
     describeSelection,
+    autoComparison,
   );
 
   const periodDates = useMemo(
@@ -221,6 +224,8 @@ export default function CalendarFilter(props: CalendarFilterProps) {
         afterSelect?.(slot);
       }}
       onClear={clearSlot}
+      // The narrow filter bar shows the quick buttons only until a comparison period exists
+      onCompareWith={afterSelect && selectedDatesT2.size > 0 ? undefined : compareWith}
     />
   );
 

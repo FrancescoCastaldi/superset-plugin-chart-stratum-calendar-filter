@@ -140,6 +140,11 @@ export default function transformProps(chartProps: ChartProps) {
     referenceLabel: textOption(option('referenceLabel', 'reference_label')),
     comparisonLabel: textOption(option('comparisonLabel', 'comparison_label')),
     enableComparison: option('enableComparison', 'enable_comparison') !== false,
+    autoComparison: oneOf(
+      option('autoComparison', 'auto_comparison'),
+      ['none', 'previous_period', 'previous_year'] as const,
+      'none',
+    ),
     setDataMask,
     filterState,
     dateColumn,

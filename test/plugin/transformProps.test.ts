@@ -81,6 +81,7 @@ describe('SupersetPluginChartCalendarFilter transformProps', () => {
       valueAggregation: 'sum',
       metricKey: 'sum__num',
       enableComparison: true,
+      autoComparison: 'none',
       data: [
         { ds: '2024-01-01', sum__num: 10 },
         { ds: '2024-01-02', sum__num: 20 },
@@ -221,5 +222,28 @@ describe('period options', () => {
     expect(build({ enableComparison: false }).enableComparison).toBe(false);
     expect(build({ enable_comparison: false }).enableComparison).toBe(false);
     expect(build({ enableComparison: null }).enableComparison).toBe(true);
+  });
+});
+
+describe('auto comparison option', () => {
+  const build = (options: Record<string, unknown>) =>
+    transformProps(
+      new ChartProps({
+        formData: { viz_type: 'calendar_filter', ...options },
+        width: 400,
+        height: 300,
+        theme: supersetTheme,
+        queriesData: [{ data: [] }],
+      } as any),
+    );
+
+  it('is off by default and ignores unknown values', () => {
+    expect(build({}).autoComparison).toBe('none');
+    expect(build({ autoComparison: 'weird' }).autoComparison).toBe('none');
+  });
+
+  it('reads the option camelCased or in snake case', () => {
+    expect(build({ autoComparison: 'previous_year' }).autoComparison).toBe('previous_year');
+    expect(build({ auto_comparison: 'previous_period' }).autoComparison).toBe('previous_period');
   });
 });

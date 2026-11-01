@@ -73,6 +73,8 @@ interface CalendarFilterCustomizeProps {
   comparisonLabel?: string;
   /** Let users pick a second, comparison period and show the cards naming both periods (default true) */
   enableComparison?: boolean;
+  /** Fill the comparison period from the reference one whenever the reference changes (default off) */
+  autoComparison?: 'none' | 'previous_period' | 'previous_year';
 }
 
 export type CalendarFilterQueryFormData = QueryFormData &

@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-01
+### Added
+- **Comparison in one click**: under the period cards, *Previous period* (the days right before, as many as the reference spans) and *Same period last year* fill the comparison period from the reference one. They show once there is a reference period; in the narrow filter bar only until a comparison period exists.
+- **Fill the comparison period automatically** (`auto_comparison`, default off): the same, applied whenever the reference period changes, until the user picks or clears the comparison period by hand.
+- 14 new tests (204 in total).
+
 ## [0.2.0] - 2026-11-01
 ### Added
 - **Period names and readable ranges for the charts**: `extraFormData.custom_form_data` now carries `period_labels` (the names chosen in the control panel), `period_text` (ranges such as `1 Jan - 31 Mar 2008`, in the calendar language, English or Italian) and `locale`, so charts can name the two periods instead of printing raw dates. StratumBar, StratumHeatmap and StratumKPI do.

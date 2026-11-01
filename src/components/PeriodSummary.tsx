@@ -6,10 +6,14 @@ import {
   PeriodName,
   PeriodRange,
   PeriodClearButton,
+  QuickCompareRow,
+  QuickCompareButton,
 } from '../styles/CalendarFilter.styles';
 import { useCalendarDisplay } from '../utils/labels';
 import { PERIOD_SLOTS, summarizePeriod } from '../utils/periods';
 import type { PeriodNames, PeriodSlot } from '../utils/periods';
+import { COMPARISON_SHIFTS } from '../utils/comparePeriod';
+import type { ComparisonShift } from '../utils/comparePeriod';
 
 interface PeriodSummaryProps {
   /** Names of the periods, already resolved from the control panel labels */
@@ -24,6 +28,8 @@ interface PeriodSummaryProps {
   comparisonEnabled: boolean;
   onSelect: (slot: PeriodSlot) => void;
   onClear: (slot: PeriodSlot) => void;
+  /** Fill the comparison period from the reference one; the buttons show when this is given */
+  onCompareWith?: (shift: ComparisonShift) => void;
   /** One card per row, for narrow areas such as the native filter bar */
   stacked?: boolean;
 }
@@ -40,6 +46,7 @@ export default function PeriodSummary({
   comparisonEnabled,
   onSelect,
   onClear,
+  onCompareWith,
   stacked = false,
 }: PeriodSummaryProps) {
   const { labels } = useCalendarDisplay();
@@ -77,6 +84,16 @@ export default function PeriodSummary({
           </PeriodCard>
         );
       })}
+      {onCompareWith && comparisonEnabled && dates.T1.size > 0 && (
+        <QuickCompareRow role="group" aria-label={labels.compareWith}>
+          <span>{labels.compareWith}</span>
+          {COMPARISON_SHIFTS.map(shift => (
+            <QuickCompareButton key={shift} type="button" data-compare={shift} onClick={() => onCompareWith(shift)}>
+              ↔ {shift === 'previous_period' ? labels.comparePrevious : labels.compareLastYear}
+            </QuickCompareButton>
+          ))}
+        </QuickCompareRow>
+      )}
     </PeriodList>
   );
 }

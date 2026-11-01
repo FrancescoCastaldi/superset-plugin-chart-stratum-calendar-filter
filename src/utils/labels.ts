@@ -41,6 +41,9 @@ export interface CalendarLabels {
   periodNotSet: string;
   /** Warning on a period whose days hold no data */
   periodNoData: string;
+  compareWith: string;
+  comparePrevious: string;
+  compareLastYear: string;
   periodNoDataTitle: string;
   periodsGroup: string;
   periodDays: (n: number) => string;
@@ -93,6 +96,9 @@ const IT: CalendarLabels = {
   comparisonPeriod: 'Periodo di confronto',
   periodNotSet: 'Non impostato',
   periodNoData: 'nessun dato',
+  compareWith: 'Confronta con',
+  comparePrevious: 'Periodo precedente',
+  compareLastYear: 'Stesso periodo anno scorso',
   periodNoDataTitle: 'Nessuno dei giorni di questo periodo ha dati: i grafici non mostreranno nulla per questo periodo',
   periodsGroup: 'Periodi selezionati',
   periodDays: n => (n === 1 ? '1 giorno' : `${n} giorni`),
@@ -158,6 +164,9 @@ const EN: CalendarLabels = {
   comparisonPeriod: 'Comparison period',
   periodNotSet: 'Not set',
   periodNoData: 'no data',
+  compareWith: 'Compare with',
+  comparePrevious: 'Previous period',
+  compareLastYear: 'Same period last year',
   periodNoDataTitle: 'None of the days in this period has data: charts will show nothing for it',
   periodsGroup: 'Selected periods',
   periodDays: n => (n === 1 ? '1 day' : `${n} days`),

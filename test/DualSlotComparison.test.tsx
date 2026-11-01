@@ -148,6 +148,47 @@ describe('CalendarFilter reference and comparison periods', () => {
     expect(custom[0].t1_dates).toBeUndefined();
   });
 
+  describe('comparison in one click', () => {
+    const lastMask = () => mockSetDataMask.mock.calls[mockSetDataMask.mock.calls.length - 1][0];
+
+    it('fills the comparison period from the reference with the quick buttons', () => {
+      const { container } = render(
+        <CalendarFilter
+          {...baseProps}
+          filterState={{ value: ['2026-09-14', '2026-09-15', '2026-09-16'], selectedDatesT1: ['2026-09-14', '2026-09-15', '2026-09-16'] }}
+        />,
+      );
+      fireEvent.click(container.querySelector('[data-compare="previous_period"]') as HTMLElement);
+      expect(lastMask().extraFormData.time_range).toBe('2026-09-14 : 2026-09-17');
+      expect(lastMask().extraFormData.time_compare).toEqual(['2026-09-11 : 2026-09-14']);
+
+      fireEvent.click(container.querySelector('[data-compare="previous_year"]') as HTMLElement);
+      expect(lastMask().extraFormData.time_compare).toEqual(['2025-09-14 : 2025-09-17']);
+    });
+
+    it('offers the buttons only once there is a reference period', () => {
+      const { container } = render(<CalendarFilter {...baseProps} />);
+      expect(container.querySelector('[data-compare]')).toBeNull();
+    });
+
+    it('fills the comparison automatically when asked to, until the user picks one', () => {
+      const { container } = render(<CalendarFilter {...baseProps} autoComparison="previous_year" />);
+      fireEvent.click(container.querySelectorAll('[data-date="2026-09-15"]')[0]);
+      expect(lastMask().extraFormData.time_compare).toEqual(['2025-09-15 : 2025-09-16']);
+
+      // the user takes over the comparison period: it is no longer overwritten
+      fireEvent.click(cardOf(container, 'T2').querySelector('button') as HTMLElement);
+      fireEvent.click(container.querySelectorAll('[data-date="2026-09-10"]')[0]);
+      expect(lastMask().extraFormData.time_compare).toEqual(['2026-09-10 : 2026-09-11']);
+    });
+
+    it('does not fill anything on its own by default', () => {
+      const { container } = render(<CalendarFilter {...baseProps} />);
+      fireEvent.click(container.querySelectorAll('[data-date="2026-09-15"]')[0]);
+      expect(lastMask().extraFormData.time_compare).toBeUndefined();
+    });
+  });
+
   it('does not send a label when nothing is selected', () => {
     const { container } = render(
       <CalendarFilter {...baseProps} filterState={{ value: ['2026-09-15'], selectedDatesT1: ['2026-09-15'] }} />,
