@@ -213,6 +213,18 @@ Launch `http://localhost:8088`, create a new chart, and select **Calendar Filter
 
 ---
 
+## 🔗 How to turn the filter on
+
+The calendar works in two ways, and both are active as soon as the plugin is registered.
+
+**As a native filter (filter bar).** Edit the dashboard, open the filter bar and choose *Add or edit filters*, then *Add filter*. Set *Filter type* to **StratumCalendar**, pick the dataset and the date column to filter, and save. Users then pick days, ranges or a comparison period in the filter bar and press *Apply filters*. Set *Scoping* to choose which charts the filter reaches.
+
+**As a chart on the dashboard (cross-filter).** Add a StratumCalendar chart. Clicking a day, dragging over a range or using a shortcut filters the other charts, with no extra setup: cross-filtering is on by default in Superset 6 (flag `DASHBOARD_CROSS_FILTERS`) and the *Cross-filters* tab of the filter bar scopes it. Click the selection again or use *Clear all* to remove it.
+
+In both cases the other charts need the filtered column in their dataset, and the charts that should follow the comparison period need the settings listed under [How to see the comparison](#-how-to-see-the-comparison).
+
+---
+
 ## 🧭 How to see the comparison
 
 1. **Pick the reference period** in the calendar (days, a range, a week, a month, a shortcut).
