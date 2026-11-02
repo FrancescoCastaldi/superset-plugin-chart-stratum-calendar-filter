@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/FrancescoCastaldi/superset-plugin-chart-calendar-filter#readme",
   "keywords": [
+    "stratum",
+    "stratum-calendar",
     "superset",
     "apache-superset",
     "plugin",

@@ -33,7 +33,7 @@ export default class SupersetPluginChartCalendarFilter extends ChartPlugin {
       category: t('Filters and controls'),
       description: 'StratumCalendar: Calendar Filter Plugin for Apache Superset',
       name: t('StratumCalendar: Calendar Heatmap & Filter'),
-      tags: [t('Filter'), t('Calendar'), t('Date')],
+      tags: [t('Stratum'), t('Filter'), t('Calendar'), t('Date')],
       thumbnail,
       behaviors: [Behavior.InteractiveChart, Behavior.NativeFilter],
     });
