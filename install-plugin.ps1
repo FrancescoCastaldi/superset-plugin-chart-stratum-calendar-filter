@@ -4,9 +4,9 @@
 .DESCRIPTION
     Installs and registers the Calendar Filter chart plugin into an Apache Superset instance:
     1. Locates and validates the Apache Superset root directory.
-    2. Copies plugin files into superset-frontend/plugins/superset-plugin-chart-calendar-filter.
+    2. Copies plugin files into superset-frontend/plugins/superset-plugin-chart-stratum-calendar-filter.
     3. Safely parses and updates MainPreset.ts with backup (MainPreset.ts.bak) and idempotency:
-       - import { CalendarFilterPlugin } from '../../../plugins/superset-plugin-chart-calendar-filter/src';
+       - import { CalendarFilterPlugin } from '../../../plugins/superset-plugin-chart-stratum-calendar-filter/src';
        - new CalendarFilterPlugin().configure({ key: 'calendar_filter' }),
        Legacy registration variants (alias key 'superset-plugin-chart-calendar-filter',
        SupersetPluginChartCalendarFilter class, `.register()` lines, duplicates) are
@@ -136,7 +136,11 @@ if (-not (Test-Path $PluginsTargetRoot)) {
     New-Item -ItemType Directory -Path $PluginsTargetRoot -Force | Out-Null
 }
 
-$DestPluginDir = Join-Path $PluginsTargetRoot "superset-plugin-chart-calendar-filter"
+$DestPluginDir = Join-Path $PluginsTargetRoot "superset-plugin-chart-stratum-calendar-filter"
+$LegacyPluginDir = Join-Path $PluginsTargetRoot "superset-plugin-chart-calendar-filter"
+if (Test-Path $LegacyPluginDir) {
+    Remove-Item -Recurse -Force $LegacyPluginDir -ErrorAction SilentlyContinue
+}
 if (Test-Path $DestPluginDir) {
     Write-Color "[INFO] Cleaning the previous version in '$DestPluginDir'..." "Yellow"
     try {
@@ -192,10 +196,10 @@ if ($PresetFile) {
     }
 
     $Content = [System.IO.File]::ReadAllText($PresetFile, [System.Text.Encoding]::UTF8)
-    $TargetImport = "import { CalendarFilterPlugin } from '../../../plugins/superset-plugin-chart-calendar-filter/src';"
-    $TargetRegister = "        new CalendarFilterPlugin().configure({ key: 'calendar_filter' }),"
-    $ImportRegex = "from\s*['`"][^'`"]*superset-plugin-chart-calendar-filter"
-    $RegisterRegex = 'new\s+(SupersetPluginChartCalendarFilter|CalendarFilterPlugin)'
+    $TargetImport = "import { CalendarFilterPlugin } from '../../../plugins/superset-plugin-chart-stratum-calendar-filter/src';"
+    $TargetRegister = "        new CalendarFilterPlugin().configure({ key: 'stratum_calendar' }),`r`n        new CalendarFilterPlugin().configure({ key: 'calendar_filter' }),"
+    $ImportRegex = "from\s*['`"][^'`"]*superset-plugin-chart-(stratum-)?calendar-filter"
+    $RegisterRegex = 'new\s+(SupersetPluginChartCalendarFilter|CalendarFilterPlugin|StratumCalendarChartPlugin)'
 
     $NL = "`n"
     if ($Content -match "`r`n") { $NL = "`r`n" }

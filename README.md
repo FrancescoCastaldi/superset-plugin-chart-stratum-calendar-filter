@@ -84,7 +84,7 @@ flowchart LR
 ## 📁 Repository Structure
 
 ```
-superset-plugin-chart-calendar-filter/
+superset-plugin-chart-stratum-calendar-filter/
 ├── package.json                    # Plugin manifest & dependencies
 ├── tsconfig.json                   # TypeScript build settings
 ├── jest.config.js                  # Jest test configuration
@@ -149,15 +149,15 @@ node installer/install.js "D:\Sviluppo\superset"
 The installer autonomously:
 1. Locates `superset-frontend/`.
 2. Compiles the TypeScript plugin (`npm run build`).
-3. Adds `superset-plugin-chart-calendar-filter` into `superset-frontend/package.json`.
+3. Adds `superset-plugin-chart-stratum-calendar-filter` into `superset-frontend/package.json`.
 4. Idempotently registers `CalendarFilterPlugin` in `MainPreset.ts` with the key `calendar_filter`.
 5. Prompts for optional Docker overrides and native filter configurations.
 
 ### Option 3: Manual Installation
-1. Copy the plugin folder into `superset-frontend/plugins/superset-plugin-chart-calendar-filter`.
+1. Copy the plugin folder into `superset-frontend/plugins/superset-plugin-chart-stratum-calendar-filter`.
 2. In `superset-frontend/src/visualizations/presets/MainPreset.ts`:
    ```typescript
-   import { CalendarFilterPlugin } from 'superset-plugin-chart-calendar-filter';
+   import { CalendarFilterPlugin } from 'superset-plugin-chart-stratum-calendar-filter';
 
    new CalendarFilterPlugin().configure({ key: 'calendar_filter' }),
    ```

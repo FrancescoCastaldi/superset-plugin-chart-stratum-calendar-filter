@@ -1,5 +1,5 @@
 {
-  "name": "superset-plugin-chart-calendar-filter",
+  "name": "superset-plugin-chart-stratum-calendar-filter",
   "version": "0.3.0",
   "description": "StratumCalendar: Calendar Filter Plugin for Apache Superset with interactive calendar heatmap and cross-filtering",
   "sideEffects": false,
@@ -15,12 +15,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/FrancescoCastaldi/superset-plugin-chart-calendar-filter.git"
+    "url": "https://github.com/FrancescoCastaldi/superset-plugin-chart-stratum-calendar-filter.git"
   },
   "bugs": {
-    "url": "https://github.com/FrancescoCastaldi/superset-plugin-chart-calendar-filter/issues"
+    "url": "https://github.com/FrancescoCastaldi/superset-plugin-chart-stratum-calendar-filter/issues"
   },
-  "homepage": "https://github.com/FrancescoCastaldi/superset-plugin-chart-calendar-filter#readme",
+  "homepage": "https://github.com/FrancescoCastaldi/superset-plugin-chart-stratum-calendar-filter#readme",
   "keywords": [
     "stratum",
     "stratum-calendar",
