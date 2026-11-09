@@ -54,8 +54,10 @@ export default function transformProps(chartProps: ChartProps) {
     (formData as AnyRecord)[camel] ?? (formData as AnyRecord)[snake] ?? rawFormData[snake];
 
   const colorScheme = option('colorScheme', 'color_scheme');
-  const showLegend = option('showLegend', 'show_legend');
+  const showLegend = option('showLegend', 'show_legend') !== false;
   const firstDayOfWeek = option('firstDayOfWeek', 'first_day_of_week') ?? 0;
+  const firstDayParsed = parseInt(firstDayOfWeek as string, 10);
+  const firstDayOfWeekVal = Number.isNaN(firstDayParsed) ? 0 : firstDayParsed;
   const showWeekNumbers = option('showWeekNumbers', 'show_week_numbers') ?? false;
   const showYearDropdown = option('showYearDropdown', 'show_year_dropdown') ?? true;
   const enableOverview = option('enableOverview', 'enable_overview') ?? true;
@@ -117,7 +119,7 @@ export default function transformProps(chartProps: ChartProps) {
     data,
     colorScheme,
     showLegend,
-    firstDayOfWeek: parseInt(firstDayOfWeek as string, 10),
+    firstDayOfWeek: firstDayOfWeekVal,
     showWeekNumbers: showWeekNumbers === true,
     showYearDropdown: showYearDropdown !== false,
     enableOverview: enableOverview !== false,

@@ -44,6 +44,7 @@ const config: ControlPanelConfig = {
     {
       label: t('Query'),
       expanded: true,
+      tabOverride: 'data',
       controlSetRows: [
         [
           {
@@ -104,6 +105,8 @@ const config: ControlPanelConfig = {
                 ['min', t('Minimum')],
                 ['count', t('Row count')],
               ],
+              visibility: ({ controls }: any) =>
+                Boolean(controls?.groupby?.value && (!Array.isArray(controls.groupby.value) || controls.groupby.value.length > 0)),
             },
           },
         ],
@@ -116,6 +119,7 @@ const config: ControlPanelConfig = {
         'The calendar manages two periods: the reference (current) one and an optional comparison one. Rename them here.',
       ),
       expanded: true,
+      tabOverride: 'data',
       controlSetRows: [
         [
           {
@@ -183,6 +187,7 @@ const config: ControlPanelConfig = {
     {
       label: t('Appearance'),
       expanded: true,
+      tabOverride: 'customize',
       controlSetRows: [
         [
           {
@@ -289,6 +294,7 @@ const config: ControlPanelConfig = {
     {
       label: t('Layout'),
       expanded: false,
+      tabOverride: 'customize',
       controlSetRows: [
         [
           {
@@ -347,6 +353,7 @@ const config: ControlPanelConfig = {
     {
       label: t('Holidays'),
       expanded: false,
+      tabOverride: 'customize',
       controlSetRows: [
         [
           {
@@ -393,7 +400,9 @@ const config: ControlPanelConfig = {
               default: true,
               renderTrigger: true,
               description: t('The working days shortcut leaves out highlighted holidays as well as weekends.'),
-              visibility: whenValue('holiday_mode', 'it', 'custom'),
+              visibility: ({ controls }: any) =>
+                ['it', 'custom'].includes(controls?.holiday_mode?.value) &&
+                controls?.show_macro_shortcuts?.value !== false,
             },
           },
         ],
@@ -402,6 +411,7 @@ const config: ControlPanelConfig = {
     {
       label: t('Filter behaviour'),
       expanded: false,
+      tabOverride: 'data',
       controlSetRows: [
         [
           {
@@ -492,6 +502,7 @@ const config: ControlPanelConfig = {
     {
       label: t('Shortcuts'),
       expanded: false,
+      tabOverride: 'data',
       controlSetRows: [
         [
           {

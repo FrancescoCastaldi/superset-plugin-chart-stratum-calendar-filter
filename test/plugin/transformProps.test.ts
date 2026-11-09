@@ -113,6 +113,7 @@ describe('SupersetPluginChartCalendarFilter transformProps', () => {
     });
     const result = transformProps(minimalProps);
     expect(result.firstDayOfWeek).toBe(0);
+    expect(result.showLegend).toBe(true);
     expect(result.showWeekNumbers).toBe(false);
     expect(result.showYearDropdown).toBe(true);
     expect(result.enableOverview).toBe(true);
@@ -184,6 +185,62 @@ describe('SupersetPluginChartCalendarFilter transformProps', () => {
       expect(result.scaleType).toBe('linear');
       expect(result.locale).toBe('en');
       expect(result.holidayMode).toBe('none');
+    });
+  });
+
+  describe('showLegend option', () => {
+    const build = (options: Record<string, unknown>) =>
+      transformProps(
+        new ChartProps({
+          formData: { viz_type: 'calendar_filter', ...options },
+          width: 400,
+          height: 300,
+          theme: supersetTheme,
+          queriesData: [{ data: [] }],
+        } as any),
+      );
+
+    it('defaults to true when omitted', () => {
+      expect(build({}).showLegend).toBe(true);
+    });
+
+    it('respects false when explicitly disabled', () => {
+      expect(build({ showLegend: false }).showLegend).toBe(false);
+      expect(build({ show_legend: false }).showLegend).toBe(false);
+    });
+
+    it('respects true when enabled', () => {
+      expect(build({ showLegend: true }).showLegend).toBe(true);
+      expect(build({ show_legend: true }).showLegend).toBe(true);
+    });
+  });
+
+  describe('firstDayOfWeek option', () => {
+    const build = (options: Record<string, unknown>) =>
+      transformProps(
+        new ChartProps({
+          formData: { viz_type: 'calendar_filter', ...options },
+          width: 400,
+          height: 300,
+          theme: supersetTheme,
+          queriesData: [{ data: [] }],
+        } as any),
+      );
+
+    it('defaults to 0 when omitted', () => {
+      expect(build({}).firstDayOfWeek).toBe(0);
+    });
+
+    it('guards against NaN and invalid numbers', () => {
+      expect(build({ firstDayOfWeek: 'invalid' }).firstDayOfWeek).toBe(0);
+      expect(build({ firstDayOfWeek: NaN }).firstDayOfWeek).toBe(0);
+      expect(build({ first_day_of_week: 'not-a-number' }).firstDayOfWeek).toBe(0);
+    });
+
+    it('parses valid numeric strings and numbers', () => {
+      expect(build({ firstDayOfWeek: 1 }).firstDayOfWeek).toBe(1);
+      expect(build({ firstDayOfWeek: '1' }).firstDayOfWeek).toBe(1);
+      expect(build({ first_day_of_week: '0' }).firstDayOfWeek).toBe(0);
     });
   });
 });
