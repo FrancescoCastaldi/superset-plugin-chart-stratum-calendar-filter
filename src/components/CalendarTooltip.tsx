@@ -26,6 +26,7 @@ import {
 } from '../styles/CalendarFilter.styles';
 import { TooltipData } from '../types';
 import { useCalendarDisplay } from '../utils/labels';
+import { formatInteger } from '../utils/numberFormat';
 
 interface CalendarTooltipProps {
   tooltip: TooltipData;
@@ -42,11 +43,11 @@ const CalendarTooltip = memo(function CalendarTooltip({
 }: CalendarTooltipProps) {
   const { labels } = useCalendarDisplay();
   const displayValue = formatNumbers
-    ? tooltip.value?.toLocaleString() ?? labels.noValue
+    ? (tooltip.value != null ? formatInteger(tooltip.value) : labels.noValue)
     : tooltip.value != null
       ? tooltip.value
       : labels.noValue;
-  const displayMax = formatNumbers ? maxValue.toLocaleString() : maxValue;
+  const displayMax = formatNumbers ? formatInteger(maxValue) : maxValue;
 
   return (
     <TooltipContainer x={tooltip.x} y={tooltip.y}>

@@ -19,6 +19,7 @@
 import React, { memo } from 'react';
 import { LegendBar, LegendSeparator, LegendSwatch } from '../styles/CalendarFilter.styles';
 import { useCalendarDisplay } from '../utils/labels';
+import { formatInteger } from '../utils/numberFormat';
 
 interface HeatLegendProps {
   palette: string[];
@@ -35,11 +36,11 @@ const HeatLegend = memo(function HeatLegend({ palette, min, max }: HeatLegendPro
       <span>{labels.legendNoData}</span>
       <LegendSeparator />
       <span>{labels.legendLess}</span>
-      <strong>{min.toLocaleString()}</strong>
+      <strong>{formatInteger(min)}</strong>
       {palette.map(color => (
         <LegendSwatch key={color} $color={color} />
       ))}
-      <strong>{max.toLocaleString()}</strong>
+      <strong>{formatInteger(max)}</strong>
       <span>{labels.legendMore}</span>
     </LegendBar>
   );
