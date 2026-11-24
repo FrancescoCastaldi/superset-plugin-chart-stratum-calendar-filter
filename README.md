@@ -143,7 +143,7 @@ Double-click:
 node installer/install.js
 
 # Or specify your Superset root directory:
-node installer/install.js "D:\Sviluppo\superset"
+node installer/install.js "<SSD_DRIVE>:\Actual\03_Sviluppo_Software\Repositories\apache-superset-6.1.0"
 ```
 
 The installer autonomously:
